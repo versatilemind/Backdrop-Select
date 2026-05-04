@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backdrop Select — Find Your Perfect Studio Backdrop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080808;--bg2:#111;--bg3:#181818;--bg4:#222;
+  --white:#F8F4EF;--muted:rgba(248,244,239,0.45);--faint:rgba(248,244,239,0.12);
+  --accent:#FF3D00;--accent-glow:rgba(255,61,0,0.25);
+  --gold:#FFD600;--cyan:#00C8FF;--green:#00E676;
+  --border:rgba(248,244,239,0.1);--border2:rgba(248,244,239,0.18);
+  --radius:16px;--radius-sm:10px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;cursor:none}
+
+/* CUSTOM CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s,background .15s}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .08s ease;opacity:.6}
+body:hover #cursor{opacity:1}
+
+/* NOISE OVERLAY */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:20px;height:20px}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px}
+.logo-name span{color:var(--accent)}
+.nav-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:12px;padding:4px}
+.nav-tab{padding:8px 18px;border-radius:9px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted)}
+.nav-tab.active{background:var(--accent);color:var(--white)}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.btn-sm{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.btn-outline{background:transparent;color:var(--white);border:1px solid var(--border2)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.saved-count{background:var(--accent);color:var(--white);border-radius:50%;width:18px;height:18px;font-size:10px;display:inline-flex;align-items:center;justify-content:center;margin-left:4px;font-weight:800}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 40px 60px;position:relative;overflow:hidden}
+.hero-bg-circle{position:absolute;border-radius:50%;pointer-events:none}
+.hero-bg-circle.c1{width:600px;height:600px;background:radial-gradient(circle,rgba(255,61,0,0.12) 0%,transparent 70%);top:-200px;right:-100px}
+.hero-bg-circle.c2{width:400px;height:400px;background:radial-gradient(circle,rgba(0,200,255,0.06) 0%,transparent 70%);bottom:0;left:5%}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,61,0,0.1);border:1px solid rgba(255,61,0,0.25);border-radius:20px;padding:6px 14px;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:28px;width:fit-content}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,10vw,120px);line-height:.92;letter-spacing:1px;margin-bottom:20px}
+.hero-title .line2{color:var(--accent);display:block}
+.hero-title .line3{-webkit-text-stroke:1px rgba(248,244,239,0.3);color:transparent;display:block}
+.hero-sub{font-size:15px;color:var(--muted);max-width:520px;line-height:1.75;margin-bottom:36px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{padding:14px 32px;background:var(--accent);color:var(--white);border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;border:none;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px}
+.btn-primary:hover{background:#e63600;transform:translateY(-3px);box-shadow:0 12px 36px var(--accent-glow)}
+.btn-secondary{padding:14px 32px;background:transparent;color:var(--white);border:1px solid var(--border2);border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .25s}
+.btn-secondary:hover{border-color:var(--white);transform:translateY(-3px)}
+.hero-stats{display:flex;gap:40px;margin-top:50px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;color:var(--accent)}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+
+/* ===== PANELS ===== */
+.panel-wrap{padding:100px 40px 60px;display:none}
+.panel-wrap.active{display:block}
+
+/* SECTION HEADING */
+.sec-head{margin-bottom:32px}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,5vw,48px);letter-spacing:1px;line-height:1}
+
+/* ===== VISUAL STUDIO ===== */
+.outfit-section{margin-bottom:36px}
+.outfit-intro{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.outfit-group{margin-bottom:20px}
+.outfit-group-label{font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;width:44px;height:44px;border-radius:12px;border:2.5px solid transparent;cursor:pointer;transition:all .18s;flex-shrink:0}
+.chip:hover{transform:scale(1.15);z-index:2}
+.chip.selected{border-color:var(--white)!important;transform:scale(1.2);box-shadow:0 0 0 3px rgba(255,255,255,0.15),0 8px 24px rgba(0,0,0,0.4);z-index:3}
+.chip-tip{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);background:var(--bg4);color:var(--white);font-size:9px;padding:3px 7px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;border:1px solid var(--border)}
+.chip:hover .chip-tip{opacity:1}
+
+/* STUDIO STAGE */
+.studio-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;margin-bottom:32px}
+@media(max-width:900px){.studio-layout{grid-template-columns:1fr}}
+.stage-card{background:var(--bg3);border:1px solid var(--border);border-radius:24px;overflow:hidden;position:relative}
+.stage-backdrop{height:340px;display:flex;align-items:center;justify-content:center;transition:background-color .5s ease,background .5s ease;position:relative}
+.stage-backdrop::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.5));pointer-events:none}
+.avatar-wrap{position:relative;z-index:2;transform-origin:bottom center;animation:floatAvatar 4s ease-in-out infinite}
+@keyframes floatAvatar{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.stage-info{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);gap:12px}
+.stage-info-left h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:2px}
+.stage-info-left p{font-size:11px;color:var(--muted)}
+.stage-actions{display:flex;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,61,0,0.08)}
+.icon-btn.saved{background:rgba(255,61,0,0.15);border-color:var(--accent);color:var(--accent)}
+
+/* SWIPER PANEL */
+.swiper-panel{background:var(--bg3);border:1px solid var(--border);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:20px;height:fit-content}
+.swiper-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted)}
+.swipe-track{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;scrollbar-width:thin}
+.swipe-item{display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:12px;cursor:pointer;border:1.5px solid transparent;transition:all .2s}
+.swipe-item:hover{background:var(--faint);border-color:var(--border2)}
+.swipe-item.active{background:rgba(255,61,0,0.08);border-color:var(--accent)}
+.swipe-swatch{width:44px;height:44px;border-radius:10px;flex-shrink:0}
+.swipe-info h4{font-size:13px;font-weight:700;margin-bottom:2px}
+.swipe-info p{font-size:11px;color:var(--muted)}
+.swipe-rank{margin-left:auto;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.5px;flex-shrink:0}
+.rank-1{background:rgba(255,214,0,0.15);color:var(--gold)}
+.rank-2{background:rgba(0,200,255,0.12);color:var(--cyan)}
+.rank-3{background:rgba(0,230,118,0.1);color:var(--green)}
+.rank-other{background:var(--faint);color:var(--muted)}
+
+/* THEORY TIP */
+.theory-tip{background:linear-gradient(135deg,rgba(255,61,0,0.08),rgba(255,214,0,0.05));border:1px solid rgba(255,214,0,0.15);border-radius:14px;padding:16px 20px;font-size:12px;line-height:1.8;color:rgba(248,244,239,0.7)}
+.theory-tip strong{color:var(--gold)}
+
+/* LIGHTING GUIDE */
+.lighting-section{margin-top:36px}
+.lighting-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+.lighting-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all .2s}
+.lighting-card:hover{border-color:var(--border2);transform:translateY(-3px)}
+.light-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
+.lighting-card h4{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;margin-bottom:6px}
+.lighting-card p{font-size:12px;color:var(--muted);line-height:1.7}
+.lighting-card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.tag{font-size:10px;padding:3px 8px;border-radius:5px;border:1px solid var(--border);color:var(--muted);letter-spacing:.5px}
+
+/* ===== SMART PLANNER ===== */
+.planner-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:640px){.planner-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.form-control{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--white);font-family:'Syne',sans-serif;outline:none;transition:border .2s;appearance:none;cursor:pointer}
+.form-control:focus{border-color:var(--accent);background:rgba(255,61,0,0.04)}
+.form-control option{background:#1a1a1a}
+.btn-run{width:100%;padding:16px;background:var(--accent);color:var(--white);border:none;border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:12px}
+.btn-run:hover{background:#e63600;transform:translateY(-3px);box-shadow:0 12px 36px var(--accent-glow)}
+.btn-run svg{width:22px;height:22px}
+
+/* RESULTS */
+.results-section{margin-top:32px;display:none}
+.results-section.show{display:block}
+.result-hero{border-radius:20px;padding:28px;display:flex;gap:22px;align-items:center;margin-bottom:20px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.08)}
+.result-hero-swatch{width:72px;height:72px;border-radius:16px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15)}
+.result-hero-outfit{width:44px;height:44px;border-radius:10px;flex-shrink:0;border:2px solid rgba(255,255,255,0.1);margin-right:-8px}
+.result-hero h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:4px}
+.result-hero p{font-size:12px;color:var(--muted);line-height:1.6}
+.best-tag{position:absolute;top:16px;right:20px;background:rgba(255,214,0,0.15);border:1px solid rgba(255,214,0,0.3);border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase}
+.alt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.alt-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .2s}
+.alt-card:hover{transform:translateY(-4px);border-color:var(--border2)}
+.alt-swatch{height:70px}
+.alt-info{padding:12px}
+.alt-info h4{font-size:13px;font-weight:700;margin-bottom:2px}
+.alt-info p{font-size:11px;color:var(--muted)}
+.advice-box{background:var(--bg3);border:1px solid rgba(255,214,0,0.15);border-radius:16px;padding:22px;font-size:13px;line-height:1.8;color:rgba(248,244,239,0.75)}
+.advice-box h4{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-bottom:12px;color:var(--gold)}
+.advice-box ul{padding-left:18px}
+.advice-box li{margin-bottom:6px}
+
+/* ===== COLOUR THEORY ===== */
+.theory-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px}
+.theory-card{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:24px;transition:all .2s}
+.theory-card:hover{border-color:var(--border2);transform:translateY(-4px)}
+.theory-card-icon{width:44px;height:44px;border-radius:12px;background:rgba(255,61,0,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px}
+.theory-card h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:8px;color:var(--gold)}
+.theory-card p{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:14px}
+.t-swatches{display:flex;gap:6px;flex-wrap:wrap}
+.t-sw{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:help;transition:transform .15s}
+.t-sw:hover{transform:scale(1.2)}
+.full-map-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.map-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .2s}
+.map-card:hover{transform:translateY(-3px);border-color:var(--border2)}
+.map-split{height:72px;position:relative;display:flex}
+.map-half{flex:1}
+.map-arrow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:24px;background:rgba(0,0,0,0.7);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid rgba(255,255,255,0.2)}
+.map-info{padding:12px 14px}
+.map-info h4{font-size:12px;font-weight:700;margin-bottom:2px}
+.map-info p{font-size:10px;color:var(--muted)}
+.map-count{font-size:10px;font-weight:700;color:var(--accent);margin-top:4px}
+
+/* ===== SAVED ===== */
+.saved-wrap{padding:100px 40px 60px}
+.empty-state{text-align:center;padding:80px 20px}
+.empty-state svg{width:64px;height:64px;margin:0 auto 20px;opacity:.3}
+.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:10px;opacity:.5}
+.empty-state p{font-size:13px;color:var(--muted)}
+.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.saved-card{background:var(--bg3);border:1px solid var(--border);border-radius:20px;overflow:hidden;position:relative}
+.saved-swatch-row{height:80px;display:flex}
+.saved-half{flex:1}
+.saved-body{padding:16px}
+.saved-body h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.saved-body p{font-size:11px;color:var(--muted);margin-bottom:12px}
+.saved-remove{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.6);border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;line-height:1}
+.saved-remove:hover{background:rgba(255,61,0,0.3);color:var(--white);border-color:var(--accent)}
+
+/* SCREENSHOT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;padding:32px;max-width:480px;width:100%;position:relative}
+.modal h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.modal-preview{border-radius:16px;overflow:hidden;margin-bottom:20px;border:1px solid var(--border)}
+.modal-backdrop-bar{height:120px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:rgba(255,255,255,0.6);position:relative}
+.modal-outfit-bar{height:32px;display:flex;align-items:center;padding:0 16px;gap:8px;background:rgba(0,0,0,0.4);font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:1px}
+.modal-actions{display:flex;gap:10px}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--faint);border:none;color:var(--white);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:var(--accent)}
+.share-btn{flex:1;padding:12px;border-radius:10px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.share-copy{background:var(--faint);color:var(--white);border:1px solid var(--border)}
+.share-copy:hover{border-color:var(--accent);color:var(--accent)}
+.share-download{background:var(--accent);color:var(--white)}
+.share-download:hover{background:#e63600}
+.toast{position:fixed;bottom:30px;right:30px;background:var(--bg3);border:1px solid var(--green);border-radius:12px;padding:14px 20px;font-size:13px;font-weight:700;color:var(--green);z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;letter-spacing:.5px}
+.toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="16" height="16" rx="3" stroke="white" stroke-width="1.5"/>
+        <circle cx="10" cy="10" r="4" fill="white"/>
+        <circle cx="10" cy="10" r="1.5" fill="#FF3D00"/>
+      </svg>
+    </div>
+    <div class="logo-name">BACKDROP<span>SELECT</span></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPanel('hero')">Home</button>
+    <button class="nav-tab" onclick="showPanel('visual')">Visual Studio</button>
+    <button class="nav-tab" onclick="showPanel('smart')">Smart Planner</button>
+    <button class="nav-tab" onclick="showPanel('theory')">Colour Theory</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-sm btn-outline" onclick="showPanel('saved')">Saved <span class="saved-count" id="savedCountBadge">0</span></button>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SCREENSHOT MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('show')">×</button>
+    <h2>Share This Combo</h2>
+    <p>Your perfect outfit + backdrop pairing — ready to send to your client or save to your phone.</p>
+    <div class="modal-preview" id="modalPreview">
+      <div class="modal-backdrop-bar" id="modalBackdropBar">BACKDROP PREVIEW</div>
+      <div class="modal-outfit-bar" id="modalOutfitBar">◉ OUTFIT COLOUR &nbsp;&nbsp; ◉ BACKDROP</div>
+    </div>
+    <div style="margin-bottom:16px;font-size:12px;color:var(--muted)" id="modalDesc"></div>
+    <div class="modal-actions">
+      <button class="share-btn share-copy" onclick="copyCombo()">Copy Details</button>
+      <button class="share-btn share-download" onclick="showToast('Download feature ready when hosted on a server!','var(--cyan)')">Download Image</button>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div id="panel-hero" style="display:block">
+<section class="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+  <div class="hero-badge">
+    <span>Nigeria's #1 Backdrop Matching Tool</span>
+  </div>
+  <h1 class="hero-title">
+    FIND YOUR<br>
+    <span class="line2">PERFECT</span>
+    <span class="line3">BACKDROP</span>
+  </h1>
+  <p class="hero-sub">The smart colour tool for Nigerian & global photographers. Match any outfit to its ideal studio backdrop in seconds — powered by real colour theory.</p>
+  <div class="hero-ctas">
+    <button class="btn-primary" onclick="showPanel('visual')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="3" fill="white"/></svg>
+      Start Matching
+    </button>
+    <button class="btn-secondary" onclick="showPanel('smart')">Smart Planner →</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">30+</span><span class="stat-label">Outfit Colours</span></div>
+    <div class="stat"><span class="stat-num">25+</span><span class="stat-label">Studio Backdrops</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Colour Theories</span></div>
+    <div class="stat"><span class="stat-num">5+</span><span class="stat-label">Lighting Styles</span></div>
+  </div>
+</section>
+</div>
+
+<!-- VISUAL STUDIO -->
+<div class="panel-wrap" id="panel-visual">
+  <div class="sec-head">
+    <div class="sec-label">Step 1 of 2</div>
+    <h2 class="sec-title">Pick Your Outfit Colour</h2>
+  </div>
+  <div class="outfit-section">
+    <p class="outfit-intro">Tap any colour chip that matches the outfit your subject is wearing. The studio stage will instantly update with the best matching backdrop.</p>
+    <div id="chipGroups"></div>
+  </div>
+
+  <div class="studio-layout">
+    <div class="stage-card">
+      <div class="stage-backdrop" id="stageBackdrop">
+        <div class="avatar-wrap">
+          <svg id="avatarSvg" width="130" height="230" viewBox="0 0 130 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Head -->
+            <ellipse cx="65" cy="30" rx="19" ry="22" fill="#C68642"/>
+            <!-- Hair top -->
+            <path d="M46 25 Q48 6 65 4 Q82 6 84 25 Q80 12 65 11 Q50 12 46 25Z" fill="#1a0e08"/>
+            <!-- Hair sides -->
+            <path d="M46 28 Q42 22 44 35 Q46 30 46 28Z" fill="#1a0e08"/>
+            <path d="M84 28 Q88 22 86 35 Q84 30 84 28Z" fill="#1a0e08"/>
+            <!-- Neck -->
+            <rect x="60" y="50" width="10" height="13" rx="3" fill="#C68642"/>
+            <!-- Shoulder base -->
+            <path d="M28 68 Q35 55 52 54 L60 60 L65 57 L70 60 L78 54 Q95 55 102 68 L106 120 L24 120 Z" id="avatarTop" fill="#D32F2F"/>
+            <!-- Arm left -->
+            <path d="M28 68 L18 112 Q17 116 21 117 L30 116 L35 80" id="armL" fill="#D32F2F"/>
+            <!-- Arm right -->
+            <path d="M102 68 L112 112 Q113 116 109 117 L100 116 L95 80" id="armR" fill="#D32F2F"/>
+            <!-- Hand left -->
+            <ellipse cx="19" cy="119" rx="7" ry="8" fill="#C68642"/>
+            <!-- Hand right -->
+            <ellipse cx="111" cy="119" rx="7" ry="8" fill="#C68642"/>
+            <!-- Belt -->
+            <rect x="28" y="117" width="74" height="8" rx="3" fill="rgba(0,0,0,0.3)" id="beltEl"/>
+            <!-- Pants/Skirt -->
+            <path d="M28 120 L24 194 Q24 200 32 200 L56 200 L65 150 L74 200 L98 200 Q106 200 106 194 L102 120Z" id="avatarBottom" fill="#1a1a2e"/>
+            <!-- Shoe left -->
+            <ellipse cx="31" cy="204" rx="11" ry="7" fill="#111"/>
+            <ellipse cx="31" cy="202" rx="10" ry="5" fill="#1a1a1a"/>
+            <!-- Shoe right -->
+            <ellipse cx="99" cy="204" rx="11" ry="7" fill="#111"/>
+            <ellipse cx="99" cy="202" rx="10" ry="5" fill="#1a1a1a"/>
+            <!-- Face - eyes -->
+            <ellipse cx="58" cy="30" rx="2.5" ry="3" fill="#2d1a0e"/>
+            <ellipse cx="72" cy="30" rx="2.5" ry="3" fill="#2d1a0e"/>
+            <ellipse cx="58.5" cy="29.5" rx="1" ry="1.2" fill="white"/>
+            <ellipse cx="72.5" cy="29.5" rx="1" ry="1.2" fill="white"/>
+            <!-- Nose -->
+            <path d="M63 36 Q65 39 67 36" stroke="#a06030" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <!-- Lips -->
+            <path d="M59 42 Q65 46 71 42" stroke="#a05545" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Collar -->
+            <path d="M58 54 L65 65 L72 54" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" fill="none"/>
+            <!-- Shirt detail -->
+            <path d="M44 80 Q65 88 86 80" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stage-info">
+        <div class="stage-info-left">
+          <h3 id="stageName">SELECT AN OUTFIT COLOUR</h3>
+          <p id="stageDesc">Tap any colour chip above to begin</p>
+        </div>
+        <div class="stage-actions">
+          <button class="icon-btn" id="saveBtn" onclick="saveCurrentCombo()" title="Save this combo">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.8 6.2H14L10.6 8.8L11.8 13L8 10.4L4.2 13L5.4 8.8L2 6.2H6.2L8 2Z" stroke="currentColor" stroke-width="1.3"/></svg>
+          </button>
+          <button class="icon-btn" onclick="openShareModal()" title="Share this combo">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="12" cy="3" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="13" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="4" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.3 7.3L10.8 4.2M5.3 8.7L10.8 11.8" stroke="currentColor" stroke-width="1.3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="swiper-panel">
+      <div class="swiper-title">MATCHING BACKDROPS</div>
+      <div class="swipe-track" id="swipeTrack">
+        <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px">Select an outfit colour<br>to see your matches</div>
+      </div>
+      <div class="theory-tip" id="theoryTipBox">
+        <strong>Colour theory tip</strong> — Choose an outfit to discover why certain backdrops work better based on contrast, harmony, and visual weight.
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTING GUIDE -->
+  <div class="lighting-section">
+    <div class="sec-head">
+      <div class="sec-label">Pro Knowledge</div>
+      <h2 class="sec-title">Lighting Styles Guide</h2>
+    </div>
+    <div class="lighting-grid" id="lightingGrid"></div>
+  </div>
+</div>
+
+<!-- SMART PLANNER -->
+<div class="panel-wrap" id="panel-smart">
+  <div class="sec-head">
+    <div class="sec-label">Personalised AI Suggestions</div>
+    <h2 class="sec-title">Smart Backdrop Planner</h2>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7">Fill in your shoot details and get a fully personalised backdrop recommendation — tailored to your outfit, style, mood, and more.</p>
+  <div class="planner-grid">
+    <div class="form-group">
+      <label>Outfit colour *</label>
+      <select class="form-control" id="planOutfit"><option value="">— Select colour —</option></select>
+    </div>
+    <div class="form-group">
+      <label>Shoot style *</label>
+      <select class="form-control" id="planStyle">
+        <option value="">— Select style —</option>
+        <option>Portrait / Headshot</option>
+        <option>Fashion / Editorial</option>
+        <option>Family / Group</option>
+        <option>Corporate / Professional</option>
+        <option>Maternity / Newborn</option>
+        <option>Birthday / Event</option>
+        <option>Traditional Attire / Cultural</option>
+        <option>Music Video / Creative</option>
+        <option>Graduation</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Mood / feel</label>
+      <select class="form-control" id="planMood">
+        <option value="">— Select mood —</option>
+        <option>Bold & dramatic</option>
+        <option>Soft & romantic</option>
+        <option>Professional & clean</option>
+        <option>Fun & vibrant</option>
+        <option>Natural & earthy</option>
+        <option>Royal & luxurious</option>
+        <option>Moody & cinematic</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Number of subjects</label>
+      <select class="form-control" id="planSubjects">
+        <option>Solo (1 person)</option>
+        <option>Duo (2 people)</option>
+        <option>Small group (3–5)</option>
+        <option>Large group (6+)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Outfit pattern</label>
+      <select class="form-control" id="planPattern">
+        <option value="">— Skip —</option>
+        <option>Solid / plain</option>
+        <option>Ankara / African print</option>
+        <option>Lace / embroidery</option>
+        <option>Stripes / checks</option>
+        <option>Floral</option>
+        <option>Mixed / colourful</option>
+        <option>Sequins / metallic</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Skin tone (optional)</label>
+      <select class="form-control" id="planSkin">
+        <option value="">— Skip this —</option>
+        <option>Very fair / light</option>
+        <option>Fair / medium</option>
+        <option>Olive / warm medium</option>
+        <option>Tan / caramel</option>
+        <option>Deep brown</option>
+        <option>Very deep / dark</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Preferred lighting</label>
+      <select class="form-control" id="planLight">
+        <option value="">— No preference —</option>
+        <option>Soft box / diffused</option>
+        <option>Ring light</option>
+        <option>Hard / dramatic</option>
+        <option>Natural light style</option>
+        <option>Rembrandt lighting</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Budget for backdrops</label>
+      <select class="form-control" id="planBudget">
+        <option value="">— Not specified —</option>
+        <option>Any backdrop available</option>
+        <option>Budget — basic solid colours</option>
+        <option>Mid — wider colour range</option>
+        <option>Premium — any option</option>
+      </select>
+    </div>
+  </div>
+  <button class="btn-run" onclick="runPlanner()">
+    <svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="white" stroke-width="1.5"/><path d="M8 11h6M11 8l3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    GET MY BACKDROP SUGGESTIONS
+  </button>
+  <div class="results-section" id="plannerResults"></div>
+</div>
+
+<!-- COLOUR THEORY -->
+<div class="panel-wrap" id="panel-theory">
+  <div class="sec-head">
+    <div class="sec-label">Education</div>
+    <h2 class="sec-title">Colour Theory for Photographers</h2>
+  </div>
+  <div class="theory-cards" id="theoryCards"></div>
+  <div class="sec-head">
+    <div class="sec-label">Full Reference Map</div>
+    <h2 class="sec-title">Every Outfit → Every Backdrop</h2>
+  </div>
+  <div class="full-map-grid" id="fullMapGrid"></div>
+</div>
+
+<!-- SAVED -->
+<div class="saved-wrap" id="panel-saved" style="display:none">
+  <div class="sec-head">
+    <div class="sec-label">Your Collection</div>
+    <h2 class="sec-title">Saved Combinations</h2>
+  </div>
+  <div id="savedContent"></div>
+</div>
+
+<script>
+// ====== DATA ======
+const OUTFITS=[
+  {name:"Red",hex:"#C62828",group:"Warm & Bold"},
+  {name:"Burgundy",hex:"#6A0032",group:"Warm & Bold"},
+  {name:"Coral",hex:"#FF5722",group:"Warm & Bold"},
+  {name:"Orange",hex:"#E65100",group:"Warm & Bold"},
+  {name:"Gold / Mustard",hex:"#F9A825",group:"Warm & Bold"},
+  {name:"Yellow",hex:"#F9D835",group:"Warm & Bold"},
+  {name:"Bright Green",hex:"#2E7D32",group:"Cool & Natural"},
+  {name:"Forest Green",hex:"#1B5E20",group:"Cool & Natural"},
+  {name:"Sage Green",hex:"#7C9A72",group:"Cool & Natural"},
+  {name:"Olive",hex:"#827717",group:"Cool & Natural"},
+  {name:"Teal",hex:"#00695C",group:"Cool & Natural"},
+  {name:"Sky Blue",hex:"#039BE5",group:"Blue Tones"},
+  {name:"Royal Blue",hex:"#1565C0",group:"Blue Tones"},
+  {name:"Navy Blue",hex:"#0D1B2A",group:"Blue Tones"},
+  {name:"Dusty Blue",hex:"#607D8B",group:"Blue Tones"},
+  {name:"Pink",hex:"#E91E8C",group:"Pink & Purple"},
+  {name:"Blush Pink",hex:"#F8BBD9",group:"Pink & Purple"},
+  {name:"Dusty Rose",hex:"#C48B9F",group:"Pink & Purple"},
+  {name:"Purple",hex:"#6A1B9A",group:"Pink & Purple"},
+  {name:"Lavender",hex:"#BA68C8",group:"Pink & Purple"},
+  {name:"Light Brown",hex:"#A1887F",group:"Earth & Neutral"},
+  {name:"Dark Brown",hex:"#4E342E",group:"Earth & Neutral"},
+  {name:"Nude / Beige",hex:"#D4B896",group:"Earth & Neutral"},
+  {name:"Ivory / Cream",hex:"#FFFDE7",group:"Earth & Neutral"},
+  {name:"Ankara Print",hex:"#CC3311",group:"Earth & Neutral"},
+  {name:"White",hex:"#F5F5F5",group:"Neutrals"},
+  {name:"Grey",hex:"#757575",group:"Neutrals"},
+  {name:"Charcoal",hex:"#2C2C2C",group:"Neutrals"},
+  {name:"Black",hex:"#121212",group:"Neutrals"},
+  {name:"Silver / Metallic",hex:"#B0BEC5",group:"Neutrals"},
+];
+
+const BACKDROPS_MAP={
+  "Red":["Dark Grey","Charcoal","Nude/Cream","Dark Brown","Black","Forest Green","Burgundy","Warm Grey"],
+  "Burgundy":["Dark Grey","Charcoal","Nude/Cream","Dark Brown","Black","Dusty Pink","Cream","Sage Green"],
+  "Coral":["Dark Brown","Cream","Chocolate Brown","Dark Grey","Sage Green","Nude","Charcoal"],
+  "Orange":["Dark Brown","Chocolate Brown","Dark Grey","Black","Deep Green","Cream","Charcoal"],
+  "Gold / Mustard":["Dark Brown","Chocolate Brown","Deep Green","Black","Charcoal","Cream","Dusty Pink"],
+  "Yellow":["Dark Brown","Chocolate Brown","Dark Grey","Black","Deep Green","Charcoal","Navy"],
+  "Bright Green":["Brown","Nude","Cream","Dark Grey","White","Light Pink","Warm Grey"],
+  "Forest Green":["Brown","Nude","Cream","Dark Grey","White","Dusty Pink","Warm Grey"],
+  "Sage Green":["Cream","Light Brown","Nude","White","Dusty Pink","Dark Grey","Charcoal"],
+  "Olive":["Cream","Dark Grey","Nude","Brown","Charcoal","White","Dusty Pink"],
+  "Teal":["Cream","Warm Grey","Nude","White","Dark Brown","Blush Pink","Dusty Pink"],
+  "Sky Blue":["White","Cream","Light Brown","Warm Grey","Dark Grey","Nude","Blush Pink"],
+  "Royal Blue":["White","Cream","Nude","Light Brown","Warm Grey","Orange Brown","Blush Pink"],
+  "Navy Blue":["White","Cream","Nude","Light Brown","Warm Grey","Sky Blue","Dusty Pink"],
+  "Dusty Blue":["Cream","Nude","Warm Grey","White","Light Brown","Dusty Pink","Sage Green"],
+  "Pink":["Grey","White","Nude","Dusty Blue","Dark Brown","Sage Green","Charcoal"],
+  "Blush Pink":["Dusty Blue","Warm Grey","Dark Brown","Forest Green","Sage Green","White","Cream"],
+  "Dusty Rose":["Warm Grey","Sage Green","Dark Brown","Cream","Nude","Dusty Blue","White"],
+  "Purple":["Light Grey","Nude","Dark Brown","Black","Cream","Sage Green","Charcoal"],
+  "Lavender":["Dark Grey","Cream","Nude","White","Forest Green","Charcoal","Dusty Pink"],
+  "Light Brown":["Cream","Warm Grey","Forest Green","Dusty Pink","Sky Blue","Dark Brown","Sage Green"],
+  "Dark Brown":["Cream","Warm Grey","Forest Green","Dusty Pink","Sky Blue","Nude","Sage Green"],
+  "Nude / Beige":["Cream","Warm Grey","Forest Green","Dusty Pink","Sky Blue","Dark Brown","Charcoal"],
+  "Ivory / Cream":["Dark Grey","Navy Blue","Forest Green","Dark Brown","Sky Blue","Charcoal","Burgundy"],
+  "Ankara Print":["Neutral Grey","Cream","Nude","Dark Brown","Black","Forest Green","Charcoal"],
+  "White":["Dark Grey","Navy Blue","Black","Forest Green","Brown","Sky Blue","Charcoal","Burgundy"],
+  "Grey":["White","Burgundy","Navy","Dark Brown","Blush Pink","Black","Cream"],
+  "Charcoal":["White","Cream","Sky Blue","Nude","Burgundy","Blush Pink","Warm Grey"],
+  "Black":["White","Bright Grey","Sky Blue","Burgundy","Royal Blue","Nude","Cream"],
+  "Silver / Metallic":["Black","Dark Grey","Charcoal","Navy","Deep Green","Cream","White"],
+};
+
+const BACKDROP_COLORS={
+  "Dark Grey":"#424242","Charcoal":"#2C2C2C","Neutral Grey":"#9E9E9E","Light Grey":"#D0D0D0",
+  "Bright Grey":"#BDBDBD","Warm Grey":"#9E8E80","White":"#F8F8F5","Cream":"#FFF8E7",
+  "Nude/Cream":"#E8D5B8","Nude":"#D4B896","Ivory":"#FFFDE7","Black":"#121212",
+  "Sky Blue":"#81D4FA","Dusty Blue":"#7B9BB0","Royal Blue":"#1565C0","Navy":"#0D1B2A",
+  "Forest Green":"#1B5E20","Deep Green":"#0D3B1C","Sage Green":"#7C9A72",
+  "Burgundy":"#6A0032","Dusty Pink":"#C09090","Blush Pink":"#F8BBD9","Light Pink":"#FCE4EC",
+  "Light Brown":"#A1887F","Dark Brown":"#4E342E","Brown":"#6D4C41","Chocolate Brown":"#3E1F0D",
+  "Warm Brown":"#795548","Orange Brown":"#A0522D","Navy Blue":"#0D1B2A",
+};
+
+const THEORIES=[
+  {icon:"⬤",name:"Complementary",desc:"Colours directly opposite on the colour wheel create maximum contrast — bold, dramatic, attention-commanding. Red on green, blue on orange.",backdrops:["Dark Grey","Burgundy","Forest Green","Royal Blue","Cream"],pairs:["Red → Forest Green","Blue → Orange Brown","Purple → Sage Green"]},
+  {icon:"◐",name:"Analogous harmony",desc:"Colours sitting next to each other on the wheel create natural flow and elegance. Used widely in editorial and fashion photography.",backdrops:["Dark Brown","Warm Grey","Cream","Nude","Dusty Pink"],pairs:["Orange → Brown → Cream","Green → Teal → Blue","Pink → Purple → Lavender"]},
+  {icon:"◯",name:"Neutral anchor",desc:"Grey, cream, brown, and nude backdrops are the photographer's safety net — they work with nearly every outfit and never compete.",backdrops:["Charcoal","Warm Grey","Cream","Nude/Cream","Dark Brown"],pairs:["Any outfit → Charcoal","Any outfit → Cream","Any outfit → Warm Grey"]},
+  {icon:"◑",name:"Tonal contrast",desc:"Deep outfits against light backdrops, light outfits against dark. Simple but powerful — maximises subject presence in the frame.",backdrops:["White","Black","Bright Grey","Dark Grey","Cream"],pairs:["Black outfit → White backdrop","White outfit → Dark Grey","Navy → Cream"]},
+  {icon:"◭",name:"Earth harmony",desc:"Earthy outfits (brown, olive, khaki, nude) combine beautifully with warm natural tones. Extremely popular in Lagos and Abuja portrait studios.",backdrops:["Cream","Warm Grey","Dark Brown","Forest Green","Dusty Pink"],pairs:["Ankara → Cream","Dark Brown → Forest Green","Olive → Nude"]},
+  {icon:"◈",name:"Skin tone lift",desc:"Selecting a backdrop that complements the subject's skin tone makes portraits glow. Warm backdrops flatter deeper tones; cool backdrops flatter lighter.",backdrops:["Dusty Pink","Cream","Nude/Cream","Charcoal","Dark Grey"],pairs:["Deep skin → Warm Cream or Charcoal","Fair skin → Dusty Blue or Sage Green","Caramel → Dusty Pink or Warm Grey"]},
+];
+
+const LIGHTING=[
+  {name:"Soft Box / Diffused",icon:"☀",bg:"rgba(255,214,0,0.1)",color:BACKDROP_COLORS["Cream"],desc:"The most popular choice in Nigerian studios. Creates smooth, even light with minimal harsh shadows. Perfect for portraits, families, and skin tone.",tags:["Portraits","Families","Skin-flattering"]},
+  {name:"Ring Light",icon:"◎",bg:"rgba(0,200,255,0.1)",color:BACKDROP_COLORS["Sky Blue"],desc:"Creates a signature circular catchlight in the eyes. Gives a beauty editorial feel — very popular for fashion and headshots.",tags:["Fashion","Beauty","Editorial"]},
+  {name:"Hard / Dramatic",icon:"▲",bg:"rgba(255,61,0,0.1)",color:BACKDROP_COLORS["Charcoal"],desc:"Strong single-source light creates deep shadows and high contrast. Best on dark backdrops like charcoal, navy, and black for cinematic effect.",tags:["Dramatic","Cinematic","Music shoots"]},
+  {name:"Rembrandt Lighting",icon:"◇",bg:"rgba(255,214,0,0.08)",color:BACKDROP_COLORS["Dark Brown"],desc:"45-degree side lighting with a small triangle of light under the eye. Classic technique used for artistic portraiture and traditional/cultural shoots.",tags:["Fine art","Traditional","Royal"]},
+  {name:"Butterfly Lighting",icon:"◈",bg:"rgba(0,230,118,0.08)",color:BACKDROP_COLORS["Neutral Grey"],desc:"Light positioned directly above the subject creates a butterfly shadow under the nose. Glamour and beauty photography staple.",tags:["Glamour","Beauty","Corporate"]},
+  {name:"Natural Light Style",icon:"◑",bg:"rgba(255,255,255,0.05)",color:BACKDROP_COLORS["Cream"],desc:"Mimics window light with a single large diffused panel from the side. Warm, relaxed feel — ideal for maternity, newborns, and lifestyle shoots.",tags:["Maternity","Newborn","Lifestyle"]},
+];
+
+// ====== STATE ======
+let selectedOutfitIdx=null,currentBackdropIdx=0,savedCombos=[];
+try{savedCombos=JSON.parse(localStorage.getItem('backdropSaved')||'[]')}catch(e){}
+
+// ====== INIT ======
+function init(){
+  renderChips();
+  renderLighting();
+  renderTheoryCards();
+  renderFullMap();
+  renderSaved();
+  updateSavedBadge();
+  populatePlannerSelect();
+  initCursor();
+}
+
+function initCursor(){
+  const cur=document.getElementById('cursor');
+  const ring=document.getElementById('cursor-ring');
+  document.addEventListener('mousemove',e=>{
+    cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+    setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},60);
+  });
+  document.addEventListener('mousedown',()=>{cur.style.width='8px';cur.style.height='8px';});
+  document.addEventListener('mouseup',()=>{cur.style.width='12px';cur.style.height='12px';});
+}
+
+function renderChips(){
+  const groups={};
+  OUTFITS.forEach((o,i)=>{if(!groups[o.group])groups[o.group]=[];groups[o.group].push({...o,idx:i});});
+  const wrap=document.getElementById('chipGroups');
+  wrap.innerHTML='';
+  Object.entries(groups).forEach(([grp,items])=>{
+    const div=document.createElement('div');
+    div.className='outfit-group';
+    div.innerHTML=`<div class="outfit-group-label">${grp}</div><div class="chip-row">${items.map(o=>`<div class="chip" style="background:${o.hex}" onclick="selectOutfit(${o.idx},this)" title="${o.name}"><span class="chip-tip">${o.name}</span></div>`).join('')}</div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function populatePlannerSelect(){
+  const sel=document.getElementById('planOutfit');
+  OUTFITS.forEach(o=>{const op=document.createElement('option');op.value=o.name;op.textContent=o.name;sel.appendChild(op);});
+}
+
+function selectOutfit(idx,el){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOutfitIdx=idx;currentBackdropIdx=0;
+  updateStage();
+  renderSwiper();
+}
+
+function updateStage(){
+  if(selectedOutfitIdx===null)return;
+  const outfit=OUTFITS[selectedOutfitIdx];
+  const bds=BACKDROPS_MAP[outfit.name]||["Dark Grey","Cream","Charcoal","Nude"];
+  const bd=bds[currentBackdropIdx];
+  const bdHex=BACKDROP_COLORS[bd]||"#555";
+  // Update backdrop
+  document.getElementById('stageBackdrop').style.background=bdHex;
+  document.getElementById('stageName').textContent=bd.toUpperCase();
+  document.getElementById('stageDesc').textContent=`${outfit.name} outfit · Match #${currentBackdropIdx+1} of ${bds.length}`;
+  // Update avatar
+  document.getElementById('avatarTop').style.fill=outfit.hex;
+  document.getElementById('armL').style.fill=outfit.hex;
+  document.getElementById('armR').style.fill=outfit.hex;
+  // Theory tip
+  const tips=[
+    `<strong>Best pick for ${outfit.name}</strong> — ${bd} creates the strongest backdrop contrast based on colour theory. Maximum visual impact for your subject.`,
+    `<strong>Alternative #${currentBackdropIdx+1}</strong> — ${bd} pairs well with ${outfit.name} by creating tonal harmony. Excellent choice for soft, editorial lighting.`,
+    `<strong>Option #${currentBackdropIdx+1}</strong> — ${bd} works especially well when the subject has warm or deep skin tones with ${outfit.name} outfits.`,
+  ];
+  document.getElementById('theoryTipBox').innerHTML=tips[Math.min(currentBackdropIdx,2)]||`<strong>${bd}</strong> is a well-matched backdrop option for ${outfit.name} outfits.`;
+  // Highlight active swiper item
+  document.querySelectorAll('.swipe-item').forEach((el,i)=>el.classList.toggle('active',i===currentBackdropIdx));
+}
+
+function renderSwiper(){
+  if(selectedOutfitIdx===null)return;
+  const outfit=OUTFITS[selectedOutfitIdx];
+  const bds=BACKDROPS_MAP[outfit.name]||["Dark Grey","Cream"];
+  const ranks=['#1 BEST','#2 GREAT','#3 GREAT','#4 GOOD','#5 GOOD','GOOD','GOOD','GOOD'];
+  const rankCls=['rank-1','rank-2','rank-3','rank-other','rank-other','rank-other','rank-other','rank-other'];
+  const track=document.getElementById('swipeTrack');
+  track.innerHTML=bds.map((bd,i)=>{
+    const hex=BACKDROP_COLORS[bd]||'#888';
+    return`<div class="swipe-item${i===0?' active':''}" onclick="currentBackdropIdx=${i};updateStage()">
+      <div class="swipe-swatch" style="background:${hex}"></div>
+      <div class="swipe-info"><h4>${bd}</h4><p>Backdrop option</p></div>
+      <span class="swipe-rank ${rankCls[i]}">${ranks[i]}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderLighting(){
+  const g=document.getElementById('lightingGrid');
+  g.innerHTML=LIGHTING.map(l=>`
+    <div class="lighting-card">
+      <div class="light-icon" style="background:${l.bg};font-size:22px;font-family:serif">${l.icon}</div>
+      <h4>${l.name}</h4>
+      <p>${l.desc}</p>
+      <div class="tags">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function renderTheoryCards(){
+  const g=document.getElementById('theoryCards');
+  g.innerHTML=THEORIES.map(t=>`
+    <div class="theory-card">
+      <div class="theory-card-icon" style="font-size:22px;font-family:serif">${t.icon}</div>
+      <h3>${t.name}</h3>
+      <p>${t.desc}</p>
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Example pairings</div>
+      ${t.pairs.map(p=>`<div style="font-size:11px;color:rgba(248,244,239,0.5);margin-bottom:3px">→ ${p}</div>`).join('')}
+      <div class="t-swatches" style="margin-top:12px">${t.backdrops.map(b=>`<div class="t-sw" style="background:${BACKDROP_COLORS[b]||'#888'}" title="${b}"></div>`).join('')}</div>
+    </div>`).join('');
+}
+
+function renderFullMap(){
+  const g=document.getElementById('fullMapGrid');
+  g.innerHTML=OUTFITS.map(o=>{
+    const bds=BACKDROPS_MAP[o.name]||["Dark Grey","Cream"];
+    const bdHex=BACKDROP_COLORS[bds[0]]||'#555';
+    const count=bds.length;
+    return`<div class="map-card" onclick="selectOutfitByName('${o.name}');showPanel('visual')">
+      <div class="map-split">
+        <div class="map-half" style="background:${o.hex}"></div>
+        <div class="map-half" style="background:${bdHex}"></div>
+        <div class="map-arrow">→</div>
+      </div>
+      <div class="map-info"><h4>${o.name}</h4><p>Best: ${bds[0]}</p><div class="map-count">${count} options →</div></div>
+    </div>`;
+  }).join('');
+}
+
+function selectOutfitByName(name){
+  const idx=OUTFITS.findIndex(o=>o.name===name);
+  if(idx===-1)return;
+  selectedOutfitIdx=idx;currentBackdropIdx=0;
+  // Trigger chip visual update after render
+  setTimeout(()=>{
+    const chips=document.querySelectorAll('.chip');
+    if(chips[idx]){chips[idx].classList.add('selected');updateStage();renderSwiper();}
+  },100);
+}
+
+// ====== PLANNER ======
+function runPlanner(){
+  const outfit=document.getElementById('planOutfit').value;
+  const style=document.getElementById('planStyle').value;
+  const mood=document.getElementById('planMood').value;
+  const subjects=document.getElementById('planSubjects').value;
+  const pattern=document.getElementById('planPattern').value;
+  const skin=document.getElementById('planSkin').value;
+  const light=document.getElementById('planLight').value;
+  if(!outfit){showToast('Please select an outfit colour first','var(--accent)');return;}
+  const data=BACKDROPS_MAP[outfit]||["Dark Grey","Cream","Charcoal"];
+  const out=document.getElementById('plannerResults');
+  out.classList.add('show');
+
+  // Build best pick
+  const best=data[0];const bestHex=BACKDROP_COLORS[best]||'#555';
+  const outfitObj=OUTFITS.find(o=>o.name===outfit);
+  const outfitHex=outfitObj?outfitObj.hex:'#888';
+
+  // Build advice
+  const advicePoints=[];
+  if(pattern==='Ankara / African print')advicePoints.push('With Ankara or African print outfits, always use solid neutral backdrops — cream, nude, or charcoal — to let the pattern breathe and not compete visually.');
+  if(skin==='Deep brown'||skin==='Very deep / dark')advicePoints.push('For deeper skin tones, warm cream and dusty pink backdrops add a natural glow and warmth. Dark charcoal and grey backdrops add dramatic contrast.');
+  if(skin==='Very fair / light'||skin==='Fair / medium')advicePoints.push('For fair or lighter skin tones, avoid very light backdrops as the subject can blend in. Use slightly deeper tones — sage green, dusty blue, warm grey — for definition.');
+  if(style==='Traditional Attire / Cultural')advicePoints.push('Traditional attire pops best on neutral or earthy backdrops. Avoid brightly coloured backdrops that compete with detailed fabric patterns.');
+  if(style==='Corporate / Professional')advicePoints.push('For corporate headshots, grey tones (medium grey, charcoal) and navy project authority and professionalism. Keep it clean and distraction-free.');
+  if(style==='Maternity / Newborn')advicePoints.push('Maternity and newborn shoots benefit from soft, warm, light backdrops — cream, blush pink, and sage green are ideal. Avoid harsh dark backgrounds.');
+  if(style==='Fashion / Editorial')advicePoints.push('Fashion editorials work well with both high-contrast (dark backdrop + light outfit) and complementary-colour combinations for a magazine-quality look.');
+  if(style==='Family / Group')advicePoints.push('For groups, choose a backdrop that works with all outfits present. Neutral options like warm grey, cream, or dark charcoal are safest when outfits vary.');
+  if(mood==='Bold & dramatic')advicePoints.push('For a dramatic mood, use dark backdrops (charcoal, black, deep green) with hard or Rembrandt lighting. Avoid soft warm neutrals.');
+  if(mood==='Soft & romantic')advicePoints.push('For a romantic feel, blush pink, dusty pink, and sage green backdrops with diffused soft box lighting create a beautiful, airy atmosphere.');
+  if(light==='Ring light')advicePoints.push('Ring lighting works best against mid-tone and neutral backdrops. Avoid very bright backdrops that can cause overexposure on the edges.');
+  if(subjects.includes('Large group'))advicePoints.push('For large groups, use wide-roll paper backdrops or painted canvas. Neutral mid-tones (warm grey, charcoal) read consistently across all subjects.');
+  if(pattern==='Sequins / metallic')advicePoints.push('Metallic and sequin outfits are bold on their own — pair with solid dark backdrops (black, charcoal, navy) to let the outfit be the star.');
+  if(advicePoints.length===0)advicePoints.push(`${outfit} outfits are highly versatile — the backdrops above all work well across a range of lighting setups and skin tones.`);
+
+  out.innerHTML=`
+    <div class="result-hero" style="background:linear-gradient(135deg,${bestHex}22,${bestHex}08)">
+      <div style="display:flex;align-items:center;gap:0;margin-right:16px">
+        <div class="result-hero-outfit" style="background:${outfitHex}"></div>
+        <div class="result-hero-swatch" style="background:${bestHex}"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Best backdrop match</div>
+        <h2>${best}</h2>
+        <p>${outfit} outfit${style?' · '+style:''}${mood?' · '+mood+' mood':''}</p>
+      </div>
+      <div class="best-tag">★ TOP PICK</div>
+    </div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:14px">Alternatives (ranked)</div>
+    <div class="alt-grid">${data.slice(1,7).map((bd,i)=>{const h=BACKDROP_COLORS[bd]||'#555';return`<div class="alt-card"><div class="alt-swatch" style="background:${h}"></div><div class="alt-info"><h4>${bd}</h4><p>Option #${i+2}</p></div></div>`;}).join('')}</div>
+    <div class="advice-box">
+      <h4>Personalised shoot advice</h4>
+      <ul>${advicePoints.map(a=>`<li>${a}</li>`).join('')}</ul>
+    </div>`;
+  out.scrollIntoView({behavior:'smooth',block:'start'});
+  showToast('Suggestions ready!','var(--green)');
+}
+
+// ====== SAVED ======
+function saveCurrentCombo(){
+  if(selectedOutfitIdx===null){showToast('Select an outfit first!','var(--accent)');return;}
+  const outfit=OUTFITS[selectedOutfitIdx];
+  const bds=BACKDROPS_MAP[outfit.name]||[];
+  const bd=bds[currentBackdropIdx]||bds[0];
+  const bdHex=BACKDROP_COLORS[bd]||'#555';
+  const id=outfit.name+'-'+bd;
+  if(savedCombos.find(c=>c.id===id)){showToast('Already saved!','var(--gold)');return;}
+  savedCombos.push({id,outfit:outfit.name,outfitHex:outfit.hex,backdrop:bd,backdropHex:bdHex,date:new Date().toLocaleDateString()});
+  localStorage.setItem('backdropSaved',JSON.stringify(savedCombos));
+  document.getElementById('saveBtn').classList.add('saved');
+  updateSavedBadge();
+  showToast('Combo saved!','var(--green)');
+}
+
+function removeCombo(id){
+  savedCombos=savedCombos.filter(c=>c.id!==id);
+  localStorage.setItem('backdropSaved',JSON.stringify(savedCombos));
+  updateSavedBadge();renderSaved();
+  showToast('Removed','var(--muted)');
+}
+
+function updateSavedBadge(){document.getElementById('savedCountBadge').textContent=savedCombos.length}
+
+function renderSaved(){
+  const content=document.getElementById('savedContent');
+  if(!content)return;
+  if(savedCombos.length===0){
+    content.innerHTML=`<div class="empty-state"><svg viewBox="0 0 64 64" fill="none"><path d="M32 8L37 22H52L40 31L45 46L32 37L19 46L24 31L12 22H27L32 8Z" stroke="currentColor" stroke-width="2"/></svg><h3>No saved combinations</h3><p>Go to Visual Studio and tap the star icon to save your favourite outfit + backdrop pairings.</p></div>`;
+    return;
+  }
+  content.innerHTML=`<div class="saved-grid">${savedCombos.map(c=>`
+    <div class="saved-card">
+      <div class="saved-swatch-row"><div class="saved-half" style="background:${c.outfitHex}"></div><div class="saved-half" style="background:${c.backdropHex}"></div></div>
+      <div class="saved-body">
+        <h4>${c.outfit} + ${c.backdrop}</h4>
+        <p>Saved on ${c.date}</p>
+        <button class="btn-sm btn-outline" onclick="selectOutfitByName('${c.outfit}');showPanel('visual')" style="font-size:11px;padding:6px 12px">Preview →</button>
+      </div>
+      <button class="saved-remove" onclick="removeCombo('${c.id}')">×</button>
+    </div>`).join('')}</div>`;
+}
+
+// ====== SHARE MODAL ======
+function openShareModal(){
+  if(selectedOutfitIdx===null){showToast('Select an outfit + backdrop first','var(--accent)');return;}
+  const outfit=OUTFITS[selectedOutfitIdx];
+  const bds=BACKDROPS_MAP[outfit.name]||[];
+  const bd=bds[currentBackdropIdx]||bds[0];
+  const bdHex=BACKDROP_COLORS[bd]||'#555';
+  document.getElementById('modalBackdropBar').style.background=bdHex;
+  document.getElementById('modalBackdropBar').textContent=bd.toUpperCase();
+  document.getElementById('modalOutfitBar').innerHTML=`<span style="width:16px;height:16px;border-radius:4px;background:${outfit.hex};display:inline-block;flex-shrink:0"></span> ${outfit.name} outfit &nbsp;+&nbsp; <span style="width:16px;height:16px;border-radius:4px;background:${bdHex};display:inline-block;flex-shrink:0"></span> ${bd} backdrop`;
+  document.getElementById('modalDesc').textContent=`${outfit.name} outfit paired with ${bd} backdrop — suggested by Backdrop Select colour theory engine.`;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(e){if(e.target.id==='modal')document.getElementById('modal').classList.remove('show');}
+
+function copyCombo(){
+  if(selectedOutfitIdx===null)return;
+  const outfit=OUTFITS[selectedOutfitIdx];
+  const bds=BACKDROPS_MAP[outfit.name]||[];
+  const bd=bds[currentBackdropIdx]||bds[0];
+  const text=`Backdrop Select Recommendation:\nOutfit: ${outfit.name}\nBest backdrop: ${bd}\nAll options: ${bds.join(', ')}\n\nvia backdropselect.com`;
+  navigator.clipboard.writeText(text).then(()=>showToast('Copied to clipboard!','var(--green)')).catch(()=>showToast('Copy failed — try selecting the text manually','var(--accent)'));
+  document.getElementById('modal').classList.remove('show');
+}
+
+// ====== PANELS ======
+function showPanel(id){
+  ['hero','visual','smart','theory'].forEach(p=>{
+    const el=document.getElementById('panel-'+p);
+    if(el)el.style.display='none';
+    const wrap=document.getElementById('panel-'+p);
+    if(wrap&&wrap.classList.contains('panel-wrap'))wrap.style.display='none';
+  });
+  document.getElementById('panel-saved')&&(document.getElementById('panel-saved').style.display='none');
+  const target=document.getElementById('panel-'+id);
+  if(!target)return;
+  target.style.display='block';
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const labels={hero:'Home',visual:'Visual Studio',smart:'Smart Planner',theory:'Colour Theory',saved:'Saved'};
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.trim()===labels[id])t.classList.add('active');});
+  if(id==='saved')renderSaved();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showToast(msg,color='var(--green)'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.borderColor=color;t.style.color=color;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+init();
+</script>
+</body>
+</html>
