@@ -6,34 +6,23 @@
 <title>Backdrop Select — Find Your Perfect Studio Backdrop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#080808;--bg2:#111;--bg3:#181818;--bg4:#222;
-  --white:#F8F4EF;--muted:rgba(248,244,239,0.45);--faint:rgba(248,244,239,0.12);
-  --accent:#FF3D00;--accent-glow:rgba(255,61,0,0.25);
-  --gold:#FFD600;--cyan:#00C8FF;--green:#00E676;
+  --white:#F8F4EF;--muted:rgba(248,244,239,0.45);--faint:rgba(248,244,239,0.1);
+  --accent:#FF3D00;--gold:#FFD600;--cyan:#00C8FF;--green:#00E676;
   --border:rgba(248,244,239,0.1);--border2:rgba(248,244,239,0.18);
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
 ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
 
-/* ===== BOTTOM NAV (MOBILE) ===== */
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(10,10,10,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 env(safe-area-inset-bottom,8px)}
-.bottom-nav-inner{display:flex;justify-content:space-around;align-items:center}
-.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--muted);cursor:pointer;padding:6px 12px;border-radius:12px;transition:all .2s;min-width:56px}
-.bnav-btn.active{color:var(--accent)}
-.bnav-btn svg{width:22px;height:22px}
-.bnav-btn span{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.bnav-dot{width:4px;height:4px;background:var(--accent);border-radius:50%;position:absolute;top:2px;right:2px}
-
-/* ===== TOP NAV (DESKTOP) ===== */
-.top-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+/* TOP NAV */
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .logo-icon svg{width:18px;height:18px}
@@ -43,61 +32,74 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
 .nav-tab{padding:8px 16px;border-radius:9px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted)}
 .nav-tab.active{background:var(--accent);color:var(--white)}
 .saved-count{background:var(--accent);color:var(--white);border-radius:50%;width:18px;height:18px;font-size:10px;display:inline-flex;align-items:center;justify-content:center;margin-left:4px;font-weight:800}
-.btn-sm{padding:8px 14px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;background:transparent;color:var(--white);border:1px solid var(--border2)}
+.btn-sm{padding:8px 14px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;border:1px solid var(--border2);cursor:pointer;transition:all .2s;text-transform:uppercase;background:transparent;color:var(--white)}
 .btn-sm:hover{border-color:var(--accent);color:var(--accent)}
 
-/* ===== PANELS ===== */
-.page{display:none;padding-top:70px;padding-bottom:80px;min-height:100vh}
+/* BOTTOM NAV MOBILE */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(10,10,10,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 env(safe-area-inset-bottom,8px)}
+.bottom-nav-inner{display:flex;justify-content:space-around}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--muted);cursor:pointer;padding:6px 10px;border-radius:12px;transition:all .2s;min-width:52px}
+.bnav-btn.active{color:var(--accent)}
+.bnav-btn svg{width:22px;height:22px}
+.bnav-btn span{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+
+/* PAGES */
+.page{display:none;padding-top:70px;padding-bottom:90px;min-height:100vh}
 .page.active{display:block}
 .page-inner{padding:28px 20px 40px}
-
-/* SECTION HEAD */
 .sec-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,6vw,44px);letter-spacing:1px;line-height:1;margin-bottom:20px}
+.divider{height:1px;background:var(--border);margin:24px 0}
 
-/* ===== HERO PAGE ===== */
-.hero-page{background:linear-gradient(160deg,#0a0a0a 0%,#140800 60%,#080812 100%);position:relative;overflow:hidden}
-.hero-glow1{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,61,0,0.14) 0%,transparent 70%);top:-100px;right:-80px;pointer-events:none}
-.hero-glow2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,255,0.06) 0%,transparent 70%);bottom:80px;left:-60px;pointer-events:none}
-.hero-inner{padding:40px 24px 50px;position:relative;z-index:2}
+/* HERO */
+.hero-page{background:linear-gradient(160deg,#080808 0%,#140800 60%,#080812 100%);position:relative;overflow:hidden}
+.hero-glow{position:absolute;border-radius:50%;pointer-events:none}
+.hero-glow.g1{width:500px;height:500px;background:radial-gradient(circle,rgba(255,61,0,0.13) 0%,transparent 70%);top:-150px;right:-80px}
+.hero-glow.g2{width:300px;height:300px;background:radial-gradient(circle,rgba(0,200,255,0.06) 0%,transparent 70%);bottom:60px;left:-40px}
+.hero-inner{padding:44px 24px 52px;position:relative;z-index:2}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,61,0,0.1);border:1px solid rgba(255,61,0,0.25);border-radius:20px;padding:6px 14px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:24px}
 .hero-badge::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
-.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,14vw,100px);line-height:.92;letter-spacing:1px;margin-bottom:18px}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(54px,14vw,110px);line-height:.9;letter-spacing:1px;margin-bottom:18px}
 .hero-title .red{color:var(--accent);display:block}
-.hero-title .outline{-webkit-text-stroke:1px rgba(248,244,239,0.3);color:transparent;display:block}
+.hero-title .ghost{-webkit-text-stroke:1px rgba(248,244,239,0.25);color:transparent;display:block}
 .hero-sub{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:32px}
 .hero-btns{display:flex;flex-direction:column;gap:12px}
-.btn-primary{padding:16px 28px;background:var(--accent);color:var(--white);border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
+.btn-primary{padding:16px 28px;background:var(--accent);color:var(--white);border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;transition:all .2s}
 .btn-primary:active{transform:scale(0.97)}
-.btn-secondary{padding:16px 28px;background:transparent;color:var(--white);border:1px solid var(--border2);border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .2s;width:100%;text-align:center}
-.btn-secondary:active{transform:scale(0.97)}
-.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px;padding:24px;background:rgba(255,255,255,0.04);border-radius:20px;border:1px solid var(--border)}
-.stat-num{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--accent)}
+.btn-secondary{padding:16px 28px;background:transparent;color:var(--white);border:1px solid var(--border2);border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;width:100%;text-align:center;transition:all .2s}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px;padding:22px;background:rgba(255,255,255,0.04);border-radius:20px;border:1px solid var(--border)}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--accent)}
 .stat-label{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;line-height:1.4}
-.hero-feature-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
-.hero-feat{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:18px 14px;display:flex;flex-direction:column;gap:8px}
-.hero-feat-icon{font-size:22px}
-.hero-feat h4{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px}
-.hero-feat p{font-size:11px;color:var(--muted);line-height:1.5}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.feat-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 14px}
+.feat-card .fi{font-size:20px;margin-bottom:8px}
+.feat-card h4{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;margin-bottom:4px}
+.feat-card p{font-size:11px;color:var(--muted);line-height:1.5}
 
-/* ===== VISUAL STUDIO ===== */
-.outfit-intro{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
-.outfit-group{margin-bottom:22px}
+/* OUTFIT CHIPS */
+.outfit-intro{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:18px}
+.outfit-group{margin-bottom:20px}
 .group-label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 .chip-row{display:flex;flex-wrap:wrap;gap:10px}
-.chip{width:48px;height:48px;border-radius:14px;border:3px solid transparent;cursor:pointer;transition:all .18s;position:relative;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.chip{width:46px;height:46px;border-radius:13px;border:3px solid transparent;cursor:pointer;transition:all .18s;position:relative;flex-shrink:0}
 .chip:active{transform:scale(0.9)}
-.chip.selected{border-color:var(--white)!important;transform:scale(1.18);box-shadow:0 0 0 3px rgba(255,255,255,0.2),0 8px 20px rgba(0,0,0,0.5);z-index:2}
+.chip.selected{border-color:var(--white)!important;transform:scale(1.18);box-shadow:0 0 0 3px rgba(255,255,255,0.15),0 6px 20px rgba(0,0,0,0.5);z-index:2}
 .chip-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:9px;white-space:nowrap;color:var(--muted);background:var(--bg4);padding:2px 6px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .15s;border:1px solid var(--border)}
 .chip:hover .chip-label,.chip.selected .chip-label{opacity:1}
 
-/* STAGE */
-.stage-card{background:var(--bg3);border:1px solid var(--border);border-radius:22px;overflow:hidden;margin-bottom:16px}
-.stage-backdrop{height:300px;display:flex;align-items:center;justify-content:center;transition:background .5s ease;position:relative}
-.stage-backdrop::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.45));pointer-events:none}
-.avatar-wrap{z-index:2;animation:float 4s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+/* TOP/BOTTOM TOGGLE */
+.part-toggle{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.part-btn{padding:7px 16px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;text-transform:uppercase}
+.part-btn.active{background:var(--accent);color:var(--white);border-color:var(--accent)}
+
+/* 3D STAGE */
+.stage-card{background:var(--bg3);border:1px solid var(--border);border-radius:22px;overflow:hidden;margin-bottom:16px;position:relative}
+.stage-backdrop{height:380px;position:relative;transition:background .5s ease;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage-backdrop canvas{position:absolute;inset:0;width:100%!important;height:100%!important;touch-action:none;cursor:grab;z-index:2}
+.stage-backdrop canvas:active{cursor:grabbing}
+.drag-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:3;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:10px;color:var(--muted);letter-spacing:1px;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:opacity .5s}
+.drag-hint.hidden{opacity:0;pointer-events:none}
 .stage-bar{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border)}
 .stage-bar-left h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px}
 .stage-bar-left p{font-size:11px;color:var(--muted)}
@@ -105,47 +107,43 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
 .icon-btn:active{transform:scale(0.9)}
 .icon-btn.saved{background:rgba(255,61,0,0.15);border-color:var(--accent);color:var(--accent)}
 
-/* SWIPE CARDS - horizontal scroll on mobile */
+/* SWIPER */
 .swipe-scroll{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .swipe-scroll::-webkit-scrollbar{display:none}
-.swipe-card{min-width:100px;border-radius:16px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:all .2s;flex-shrink:0;background:var(--bg3)}
+.swipe-card{min-width:96px;border-radius:14px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:all .2s;flex-shrink:0;background:var(--bg3)}
 .swipe-card.active{border-color:var(--white);transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,0.4)}
-.swipe-card:active{transform:scale(0.95)}
-.swipe-swatch{height:64px}
+.swipe-swatch{height:60px}
 .swipe-info{padding:8px 10px}
-.swipe-info h4{font-size:11px;font-weight:700;margin-bottom:2px;line-height:1.3}
-.swipe-rank{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.5px;display:inline-block;margin-top:3px}
-.rank-1{background:rgba(255,214,0,0.15);color:var(--gold)}
-.rank-2{background:rgba(0,200,255,0.12);color:var(--cyan)}
-.rank-3{background:rgba(0,230,118,0.1);color:var(--green)}
-.rank-other{background:var(--faint);color:var(--muted)}
-
+.swipe-info h4{font-size:11px;font-weight:700;margin-bottom:3px;line-height:1.3}
+.swipe-rank{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block}
+.r1{background:rgba(255,214,0,0.15);color:var(--gold)}
+.r2{background:rgba(0,200,255,0.12);color:var(--cyan)}
+.r3{background:rgba(0,230,118,0.1);color:var(--green)}
+.ro{background:var(--faint);color:var(--muted)}
 .theory-tip{background:rgba(255,214,0,0.05);border:1px solid rgba(255,214,0,0.15);border-radius:14px;padding:14px 16px;font-size:12px;line-height:1.8;color:rgba(248,244,239,0.7);margin-top:4px}
 .theory-tip strong{color:var(--gold)}
 
-/* LIGHTING */
+/* LIGHTING GRID */
 .lighting-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .light-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:16px}
-.light-icon{font-size:22px;margin-bottom:10px}
+.light-card .li{font-size:22px;margin-bottom:10px}
 .light-card h4{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;margin-bottom:6px}
 .light-card p{font-size:11px;color:var(--muted);line-height:1.6}
 .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
 .tag{font-size:9px;padding:3px 7px;border-radius:5px;border:1px solid var(--border);color:var(--muted)}
 
-/* ===== SMART PLANNER ===== */
+/* PLANNER */
 .form-group{margin-bottom:16px}
 .form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-.form-control{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--white);font-family:'Syne',sans-serif;outline:none;transition:border .2s;appearance:none;cursor:pointer;-webkit-appearance:none}
+.form-control{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--white);font-family:'Syne',sans-serif;outline:none;transition:border .2s;appearance:none;-webkit-appearance:none}
 .form-control:focus{border-color:var(--accent)}
 .form-control option{background:#1a1a1a}
-.btn-run{width:100%;padding:18px;background:var(--accent);color:var(--white);border:none;border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-run{width:100%;padding:18px;background:var(--accent);color:var(--white);border:none;border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s}
 .btn-run:active{transform:scale(0.97)}
-
-/* RESULTS */
 .result-hero{border-radius:18px;padding:20px;display:flex;gap:16px;align-items:flex-start;margin-bottom:16px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.08)}
-.result-swatches{display:flex;align-items:center;flex-shrink:0}
-.result-outfit-sw{width:40px;height:40px;border-radius:10px;border:2px solid rgba(255,255,255,0.1);z-index:1}
-.result-bd-sw{width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,0.15);margin-left:-8px}
+.r-swatches{display:flex;align-items:center;flex-shrink:0}
+.r-out{width:40px;height:40px;border-radius:10px;border:2px solid rgba(255,255,255,0.1);z-index:1}
+.r-bd{width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,0.15);margin-left:-8px}
 .result-hero h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:4px;line-height:1}
 .result-hero p{font-size:11px;color:var(--muted);line-height:1.5}
 .best-tag{position:absolute;top:12px;right:14px;background:rgba(255,214,0,0.15);border:1px solid rgba(255,214,0,0.3);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase}
@@ -157,20 +155,17 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
 .alt-info p{font-size:10px;color:var(--muted)}
 .advice-box{background:var(--bg3);border:1px solid rgba(255,214,0,0.15);border-radius:16px;padding:18px}
 .advice-box h4{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;margin-bottom:10px;color:var(--gold)}
-.advice-box ul{padding-left:16px}
-.advice-box li{font-size:12px;color:rgba(248,244,239,0.75);margin-bottom:8px;line-height:1.6}
+.advice-box li{font-size:12px;color:rgba(248,244,239,0.75);margin-bottom:8px;line-height:1.6;padding-left:16px}
 
-/* ===== COLOUR THEORY ===== */
+/* THEORY */
 .theory-card{background:var(--bg3);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:14px}
-.theory-card-icon{font-size:24px;margin-bottom:12px}
 .theory-card h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-bottom:8px;color:var(--gold)}
 .theory-card p{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px}
-.theory-pairs{font-size:11px;color:rgba(248,244,239,0.45);line-height:2}
+.theory-pairs{font-size:11px;color:rgba(248,244,239,0.4);line-height:2}
 .t-swatches{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .t-sw{width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,0.1)}
 .map-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .map-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer}
-.map-card:active{transform:scale(0.97)}
 .map-split{height:60px;display:flex;position:relative}
 .map-half{flex:1}
 .map-arrow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;background:rgba(0,0,0,0.7);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:1px solid rgba(255,255,255,0.2)}
@@ -179,14 +174,13 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
 .map-info p{font-size:10px;color:var(--muted)}
 .map-count{font-size:10px;font-weight:700;color:var(--accent);margin-top:3px}
 
-/* ===== SAVED ===== */
+/* SAVED */
 .empty-state{text-align:center;padding:60px 20px}
-.empty-state svg{width:56px;height:56px;margin:0 auto 16px;opacity:.25;display:block}
-.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:8px;opacity:.45}
+.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:8px;opacity:.4}
 .empty-state p{font-size:13px;color:var(--muted);line-height:1.6}
 .saved-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .saved-card{background:var(--bg3);border:1px solid var(--border);border-radius:18px;overflow:hidden;position:relative}
-.saved-swatches{height:64px;display:flex}
+.saved-swatches{height:60px;display:flex}
 .saved-half{flex:1}
 .saved-body{padding:14px}
 .saved-body h4{font-size:12px;font-weight:700;margin-bottom:3px;line-height:1.3}
@@ -197,49 +191,35 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);z-index:500;display:none;align-items:flex-end;justify-content:center;padding:0}
 .modal-overlay.show{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:28px 24px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:28px 24px;width:100%;max-height:90vh;overflow-y:auto}
 .modal-handle{width:40px;height:4px;background:var(--faint);border-radius:2px;margin:0 auto 20px}
 .modal h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:8px}
 .modal p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
 .modal-preview{border-radius:14px;overflow:hidden;margin-bottom:18px;border:1px solid var(--border)}
-.modal-backdrop-bar{height:100px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.6)}
-.modal-outfit-bar{height:36px;display:flex;align-items:center;padding:0 14px;gap:8px;background:rgba(0,0,0,0.5);font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:.5px}
+.modal-bd-bar{height:90px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.5)}
+.modal-out-bar{height:36px;display:flex;align-items:center;padding:0 14px;gap:8px;background:rgba(0,0,0,0.5);font-size:11px;color:rgba(255,255,255,0.5);font-weight:700}
 .modal-actions{display:flex;gap:10px}
-.share-btn{flex:1;padding:14px;border-radius:12px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.share-btn{flex:1;padding:14px;border-radius:12px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;text-transform:uppercase;transition:all .2s}
 .share-copy{background:var(--faint);color:var(--white);border:1px solid var(--border)}
 .share-dl{background:var(--accent);color:var(--white)}
 
 /* TOAST */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--green);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:700;color:var(--green);z-index:999;opacity:0;transition:all .3s;white-space:nowrap;letter-spacing:.5px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--green);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:700;color:var(--green);z-index:999;opacity:0;transition:all .3s;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* DIVIDER */
-.divider{height:1px;background:var(--border);margin:24px 0}
-
-/* ===== DESKTOP OVERRIDES ===== */
+/* DESKTOP */
 @media(min-width:768px){
-  body{cursor:none}
-  #cursor{display:block}
-  #cursor-ring{display:block}
   .bottom-nav{display:none!important}
   .top-nav{display:flex}
   .page{padding-top:70px;padding-bottom:40px}
   .page-inner{padding:32px 40px 60px}
-  .hero-inner{padding:60px 40px 60px;max-width:700px}
+  .hero-inner{padding:60px 40px 60px;max-width:680px}
   .hero-btns{flex-direction:row}
   .btn-primary,.btn-secondary{width:auto}
   .hero-stats{grid-template-columns:repeat(4,1fr)}
-  .hero-feature-row{grid-template-columns:repeat(4,1fr)}
-  .chip{width:44px;height:44px}
+  .feat-grid{grid-template-columns:repeat(4,1fr)}
   .studio-row{display:grid;grid-template-columns:1fr 320px;gap:24px;margin-bottom:28px}
-  .stage-backdrop{height:360px}
-  .swipe-scroll{flex-direction:column;overflow-x:visible;overflow-y:auto;max-height:280px}
-  .swipe-card{min-width:unset;display:flex;align-items:center;gap:12px;border-radius:12px;background:var(--bg3)}
-  .swipe-swatch{width:44px;height:44px;border-radius:10px;flex-shrink:0}
-  .swipe-card.active{transform:none;border-color:var(--accent);box-shadow:none}
-  .swipe-card .swipe-info{flex:1;padding:0}
-  .swipe-card{padding:10px 12px;height:auto}
-  .swipe-card .swipe-swatch{height:44px}
+  .stage-backdrop{height:460px}
   .lighting-grid{grid-template-columns:repeat(3,1fr)}
   .planner-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .alt-grid{grid-template-columns:repeat(3,1fr)}
@@ -248,31 +228,26 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
   .map-grid{grid-template-columns:repeat(4,1fr)}
   .saved-grid{grid-template-columns:repeat(3,1fr)}
   .modal-overlay{align-items:center;padding:20px}
-  .modal{border-radius:24px;max-width:480px}
+  .modal{border-radius:24px;max-width:460px}
   .toast{bottom:30px}
 }
 @media(max-width:767px){
   .top-nav .nav-tabs,.top-nav .btn-sm{display:none}
   .bottom-nav{display:block}
-  #cursor,#cursor-ring{display:none}
 }
-
-/* CURSOR (desktop only) */
-#cursor{display:none;position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
-#cursor-ring{display:none;position:fixed;width:36px;height:36px;border:1.5px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .08s ease;opacity:.6}
+#cursor,#cursor-ring{display:none;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#cursor{width:12px;height:12px;background:var(--accent);border-radius:50%}
+#cursor-ring{width:36px;height:36px;border:1.5px solid var(--accent);border-radius:50%;z-index:9998;opacity:.6;transition:all .08s ease}
+@media(min-width:768px){#cursor,#cursor-ring{display:block}}
 </style>
 </head>
 <body>
+<div id="cursor"></div><div id="cursor-ring"></div>
 
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-
-<!-- DESKTOP TOP NAV -->
+<!-- TOP NAV -->
 <nav class="top-nav">
   <div class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="4" fill="white"/><circle cx="10" cy="10" r="1.5" fill="#FF3D00"/></svg>
-    </div>
+    <div class="logo-icon"><svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="4" fill="white"/><circle cx="10" cy="10" r="1.5" fill="#FF3D00"/></svg></div>
     <div class="logo-name">BACKDROP<span>SELECT</span></div>
   </div>
   <div class="nav-tabs">
@@ -284,33 +259,17 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
   <button class="btn-sm" onclick="showPage('saved')">Saved <span class="saved-count" id="savedBadge">0</span></button>
 </nav>
 
-<!-- MOBILE BOTTOM NAV -->
+<!-- MOBILE NAV -->
 <div class="bottom-nav">
   <div class="bottom-nav-inner">
-    <button class="bnav-btn active" id="bnav-home" onclick="showPage('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 3L21 12V20A1 1 0 0120 21H15V16H9V21H4A1 1 0 013 20V12Z"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="bnav-btn" id="bnav-visual" onclick="showPage('visual')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>
-      <span>Studio</span>
-    </button>
-    <button class="bnav-btn" id="bnav-smart" onclick="showPage('smart')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a7 7 0 017 7c0 2.5-1.3 4.7-3.3 6l-.7 3H9l-.7-3A7 7 0 015 9a7 7 0 017-7z"/><path d="M9 21h6"/></svg>
-      <span>Planner</span>
-    </button>
-    <button class="bnav-btn" id="bnav-theory" onclick="showPage('theory')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
-      <span>Theory</span>
-    </button>
-    <button class="bnav-btn" id="bnav-saved" onclick="showPage('saved')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.1 6.3L22 9.3l-5 4.9 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.3l6.9-1L12 2z"/></svg>
-      <span>Saved</span>
-    </button>
+    <button class="bnav-btn active" id="bnav-home" onclick="showPage('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 3L21 12V20A1 1 0 0120 21H15V16H9V21H4A1 1 0 013 20V12Z"/></svg><span>Home</span></button>
+    <button class="bnav-btn" id="bnav-visual" onclick="showPage('visual')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg><span>Studio</span></button>
+    <button class="bnav-btn" id="bnav-smart" onclick="showPage('smart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a7 7 0 017 7c0 2.5-1.3 4.7-3.3 6l-.7 3H9l-.7-3A7 7 0 015 9a7 7 0 017-7z"/><path d="M9 21h6"/></svg><span>Planner</span></button>
+    <button class="bnav-btn" id="bnav-theory" onclick="showPage('theory')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>Theory</span></button>
+    <button class="bnav-btn" id="bnav-saved" onclick="showPage('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.1 6.3L22 9.3l-5 4.9 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.3l6.9-1L12 2z"/></svg><span>Saved</span></button>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <!-- SHARE MODAL -->
@@ -320,87 +279,71 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
     <h2>Share This Combo</h2>
     <p>Your perfect outfit + backdrop match — ready to send to your client.</p>
     <div class="modal-preview">
-      <div class="modal-backdrop-bar" id="modalBdBar">BACKDROP</div>
-      <div class="modal-outfit-bar" id="modalOutfitBar">Outfit + Backdrop</div>
+      <div class="modal-bd-bar" id="modalBdBar">BACKDROP</div>
+      <div class="modal-out-bar" id="modalOutBar">Outfit + Backdrop</div>
     </div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:18px" id="modalDesc"></div>
     <div class="modal-actions">
       <button class="share-btn share-copy" onclick="copyCombo()">Copy Details</button>
-      <button class="share-btn share-dl" onclick="showToast('Save screenshot with your phone!')">Save / Share</button>
+      <button class="share-btn share-dl" onclick="showToast('Take a screenshot to save and share!')">Save / Share</button>
     </div>
   </div>
 </div>
 
-<!-- ===== HOME PAGE ===== -->
+<!-- HOME -->
 <div class="page active" id="page-home">
   <div class="hero-page" style="padding-top:0">
-    <div class="hero-glow1"></div>
-    <div class="hero-glow2"></div>
+    <div class="hero-glow g1"></div><div class="hero-glow g2"></div>
     <div class="hero-inner">
       <div class="hero-badge">Nigeria's #1 Backdrop Tool</div>
-      <h1 class="hero-title">FIND YOUR<span class="red">PERFECT</span><span class="outline">BACKDROP</span></h1>
-      <p class="hero-sub">The smart colour tool for Nigerian & global photographers. Match any outfit to its ideal studio backdrop in seconds — powered by real colour theory.</p>
+      <h1 class="hero-title">FIND YOUR<span class="red">PERFECT</span><span class="ghost">BACKDROP</span></h1>
+      <p class="hero-sub">The smart colour tool for Nigerian & global photographers. Match any outfit to its ideal studio backdrop instantly — powered by real colour theory.</p>
       <div class="hero-btns">
-        <button class="btn-primary" onclick="showPage('visual')">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="white" stroke-width="1.5"/><circle cx="9" cy="9" r="3" fill="white"/></svg>
-          Start Matching
-        </button>
+        <button class="btn-primary" onclick="showPage('visual')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="white" stroke-width="1.5"/><circle cx="9" cy="9" r="3" fill="white"/></svg>Start Matching</button>
         <button class="btn-secondary" onclick="showPage('smart')">Smart Planner →</button>
       </div>
       <div class="hero-stats">
         <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Outfit Colours</div></div>
         <div class="stat"><div class="stat-num">25+</div><div class="stat-label">Backdrops</div></div>
-        <div class="stat"><div class="stat-num">6</div><div class="stat-label">Colour Theories</div></div>
+        <div class="stat"><div class="stat-num">360°</div><div class="stat-label">Mannequin View</div></div>
         <div class="stat"><div class="stat-num">6</div><div class="stat-label">Lighting Styles</div></div>
       </div>
-      <div class="hero-feature-row">
-        <div class="hero-feat"><div class="hero-feat-icon">🎨</div><h4>Visual Studio</h4><p>See your outfit on a live avatar against any backdrop</p></div>
-        <div class="hero-feat"><div class="hero-feat-icon">🧠</div><h4>Smart Planner</h4><p>Fill in your shoot details for a personalised suggestion</p></div>
-        <div class="hero-feat"><div class="hero-feat-icon">📚</div><h4>Colour Theory</h4><p>Learn why certain colours work together in photography</p></div>
-        <div class="hero-feat"><div class="hero-feat-icon">⭐</div><h4>Save Combos</h4><p>Save your favourite pairings and share with clients</p></div>
+      <div class="feat-grid">
+        <div class="feat-card"><div class="fi">🎨</div><h4>Visual Studio</h4><p>See outfit colours on a live 3D mannequin against any backdrop</p></div>
+        <div class="feat-card"><div class="fi">↕</div><h4>Top & Bottom</h4><p>Colour the top and bottom of the outfit separately</p></div>
+        <div class="feat-card"><div class="fi">🧠</div><h4>Smart Planner</h4><p>Fill in shoot details for a personalised suggestion</p></div>
+        <div class="feat-card"><div class="fi">⭐</div><h4>Save Combos</h4><p>Save your favourite pairings to share with clients</p></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== VISUAL STUDIO PAGE ===== -->
+<!-- VISUAL STUDIO -->
 <div class="page" id="page-visual">
   <div class="page-inner">
-    <div class="sec-label">Step 1 — Tap your outfit colour</div>
+    <div class="sec-label">Step 1 — Choose what you are colouring</div>
     <h2 class="sec-title">Visual Studio</h2>
-    <p class="outfit-intro">Tap the colour that matches your subject's outfit. The studio backdrop will update instantly with the best matching options.</p>
-    <div id="chipGroups"></div>
+    <p class="outfit-intro">First choose whether you are picking a colour for the top, bottom, or both parts of the outfit. Then tap a colour chip.</p>
+
+    <div class="part-toggle">
+      <button class="part-btn active" id="ptBoth" onclick="setPart('both')">TOP + BOTTOM</button>
+      <button class="part-btn" id="ptTop" onclick="setPart('top')">TOP ONLY</button>
+      <button class="part-btn" id="ptBottom" onclick="setPart('bottom')">BOTTOM ONLY</button>
+    </div>
+
+    <div class="sec-label" style="margin-top:8px">Step 2 — Tap your outfit colour</div>
+    <div id="chipGroups" style="margin-bottom:24px"></div>
 
     <div class="divider"></div>
-    <div class="sec-label">Step 2 — Your live studio preview</div>
+    <div class="sec-label">Step 3 — Your live 3D studio preview</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Drag the mannequin to rotate. It also spins automatically.</p>
 
     <div class="studio-row">
       <div class="stage-card">
         <div class="stage-backdrop" id="stageBackdrop">
-          <div class="avatar-wrap">
-            <svg id="avatarSvg" width="120" height="220" viewBox="0 0 120 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="28" rx="18" ry="21" fill="#C68642"/>
-              <path d="M42 23 Q44 6 60 4 Q76 6 78 23 Q74 11 60 10 Q46 11 42 23Z" fill="#1a0e08"/>
-              <path d="M42 26 Q38 20 40 33Z" fill="#1a0e08"/>
-              <path d="M78 26 Q82 20 80 33Z" fill="#1a0e08"/>
-              <rect x="56" y="47" width="8" height="12" rx="3" fill="#C68642"/>
-              <path d="M25 63 Q32 52 47 51 L55 57 L60 54 L65 57 L73 51 Q88 52 95 63 L98 112 L22 112Z" id="top" fill="#D32F2F"/>
-              <path d="M25 63 L16 104 Q15 108 19 109 L28 108 L32 74" id="armL" fill="#D32F2F"/>
-              <path d="M95 63 L104 104 Q105 108 101 109 L92 108 L88 74" id="armR" fill="#D32F2F"/>
-              <ellipse cx="16" cy="111" rx="7" ry="8" fill="#C68642"/>
-              <ellipse cx="104" cy="111" rx="7" ry="8" fill="#C68642"/>
-              <rect x="24" y="109" width="72" height="8" rx="3" fill="rgba(0,0,0,0.25)"/>
-              <path d="M24 114 L20 182 Q20 188 28 188 L52 188 L60 142 L68 188 L92 188 Q100 188 100 182 L96 114Z" id="bottom" fill="#1a1a2e"/>
-              <ellipse cx="27" cy="192" rx="10" ry="6" fill="#111"/>
-              <ellipse cx="93" cy="192" rx="10" ry="6" fill="#111"/>
-              <ellipse cx="54" cy="28" rx="2.2" ry="2.8" fill="#2d1a0e"/>
-              <ellipse cx="66" cy="28" rx="2.2" ry="2.8" fill="#2d1a0e"/>
-              <ellipse cx="54.5" cy="27.5" rx="0.9" ry="1.1" fill="white"/>
-              <ellipse cx="66.5" cy="27.5" rx="0.9" ry="1.1" fill="white"/>
-              <path d="M58 34 Q60 37 62 34" stroke="#a06030" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-              <path d="M55 40 Q60 44 65 40" stroke="#a05545" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-              <path d="M54 51 L60 62 L66 51" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none"/>
-            </svg>
+          <div class="drag-hint" id="dragHint">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2L2 7L5 12M9 2L12 7L9 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            DRAG TO ROTATE
           </div>
         </div>
         <div class="stage-bar">
@@ -409,24 +352,16 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
             <p id="stageDesc">Tap any chip above to begin</p>
           </div>
           <div style="display:flex;gap:8px">
-            <button class="icon-btn" id="saveBtn" onclick="saveCurrentCombo()" title="Save">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.8 6.2H14L10.6 8.8L11.8 13L8 10.4L4.2 13L5.4 8.8L2 6.2H6.2L8 2Z" stroke="currentColor" stroke-width="1.3"/></svg>
-            </button>
-            <button class="icon-btn" onclick="openShare()" title="Share">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="12" cy="3" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="13" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="4" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.3 7.3L10.8 4.2M5.3 8.7L10.8 11.8" stroke="currentColor" stroke-width="1.3"/></svg>
-            </button>
+            <button class="icon-btn" id="saveBtn" onclick="saveCurrentCombo()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.8 6.2H14L10.6 8.8L11.8 13L8 10.4L4.2 13L5.4 8.8L2 6.2H6.2L8 2Z" stroke="currentColor" stroke-width="1.3"/></svg></button>
+            <button class="icon-btn" onclick="openShare()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="12" cy="3" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="13" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="4" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.3 7.3L10.8 4.2M5.3 8.7L10.8 11.8" stroke="currentColor" stroke-width="1.3"/></svg></button>
           </div>
         </div>
       </div>
 
       <div>
         <div class="sec-label" style="margin-bottom:12px">Swipe through backdrops</div>
-        <div class="swipe-scroll" id="swipeTrack">
-          <div style="padding:30px 16px;color:var(--muted);font-size:12px;text-align:center;width:100%">Select an outfit colour to see matches</div>
-        </div>
-        <div class="theory-tip" id="theoryTip" style="margin-top:14px">
-          <strong>Colour theory tip</strong> — Pick an outfit colour to discover why certain backdrops create the best results for your shoot.
-        </div>
+        <div class="swipe-scroll" id="swipeTrack"><div style="padding:30px 16px;color:var(--muted);font-size:12px;text-align:center;min-width:200px">Select an outfit colour<br>to see matches</div></div>
+        <div class="theory-tip" id="theoryTip" style="margin-top:14px"><strong>Colour theory tip</strong> — Pick an outfit colour to discover which backdrops create the best visual contrast and harmony for your shoot.</div>
       </div>
     </div>
 
@@ -437,113 +372,28 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
   </div>
 </div>
 
-<!-- ===== SMART PLANNER PAGE ===== -->
+<!-- SMART PLANNER -->
 <div class="page" id="page-smart">
   <div class="page-inner">
     <div class="sec-label">Personalised Suggestions</div>
     <h2 class="sec-title">Smart Backdrop Planner</h2>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7">Fill in your shoot details below and tap the button for a fully personalised backdrop recommendation.</p>
-
+    <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7">Fill in your shoot details and get a fully personalised backdrop recommendation.</p>
     <div class="planner-row">
-      <div class="form-group">
-        <label>Outfit colour *</label>
-        <select class="form-control" id="planOutfit"><option value="">— Select colour —</option></select>
-      </div>
-      <div class="form-group">
-        <label>Shoot style *</label>
-        <select class="form-control" id="planStyle">
-          <option value="">— Select style —</option>
-          <option>Portrait / Headshot</option>
-          <option>Fashion / Editorial</option>
-          <option>Family / Group</option>
-          <option>Corporate / Professional</option>
-          <option>Maternity / Newborn</option>
-          <option>Birthday / Event</option>
-          <option>Traditional Attire / Cultural</option>
-          <option>Music Video / Creative</option>
-          <option>Graduation</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Mood / feel</label>
-        <select class="form-control" id="planMood">
-          <option value="">— Select mood —</option>
-          <option>Bold & dramatic</option>
-          <option>Soft & romantic</option>
-          <option>Professional & clean</option>
-          <option>Fun & vibrant</option>
-          <option>Natural & earthy</option>
-          <option>Royal & luxurious</option>
-          <option>Moody & cinematic</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Number of subjects</label>
-        <select class="form-control" id="planSubjects">
-          <option>Solo (1 person)</option>
-          <option>Duo (2 people)</option>
-          <option>Small group (3–5)</option>
-          <option>Large group (6+)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Outfit pattern</label>
-        <select class="form-control" id="planPattern">
-          <option value="">— Skip —</option>
-          <option>Solid / plain</option>
-          <option>Ankara / African print</option>
-          <option>Lace / embroidery</option>
-          <option>Stripes / checks</option>
-          <option>Floral</option>
-          <option>Mixed / colourful</option>
-          <option>Sequins / metallic</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Skin tone (optional)</label>
-        <select class="form-control" id="planSkin">
-          <option value="">— Skip this —</option>
-          <option>Very fair / light</option>
-          <option>Fair / medium</option>
-          <option>Olive / warm medium</option>
-          <option>Tan / caramel</option>
-          <option>Deep brown</option>
-          <option>Very deep / dark</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Preferred lighting</label>
-        <select class="form-control" id="planLight">
-          <option value="">— No preference —</option>
-          <option>Soft box / diffused</option>
-          <option>Ring light</option>
-          <option>Hard / dramatic</option>
-          <option>Natural light style</option>
-          <option>Rembrandt lighting</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Budget</label>
-        <select class="form-control" id="planBudget">
-          <option value="">— Not specified —</option>
-          <option>Any backdrop available</option>
-          <option>Budget — basic solid colours</option>
-          <option>Mid — wider colour range</option>
-          <option>Premium — any option</option>
-        </select>
-      </div>
+      <div class="form-group"><label>Outfit colour *</label><select class="form-control" id="planOutfit"><option value="">— Select colour —</option></select></div>
+      <div class="form-group"><label>Shoot style *</label><select class="form-control" id="planStyle"><option value="">— Select style —</option><option>Portrait / Headshot</option><option>Fashion / Editorial</option><option>Family / Group</option><option>Corporate / Professional</option><option>Maternity / Newborn</option><option>Birthday / Event</option><option>Traditional Attire / Cultural</option><option>Music Video / Creative</option><option>Graduation</option></select></div>
+      <div class="form-group"><label>Mood / feel</label><select class="form-control" id="planMood"><option value="">— Select mood —</option><option>Bold & dramatic</option><option>Soft & romantic</option><option>Professional & clean</option><option>Fun & vibrant</option><option>Natural & earthy</option><option>Royal & luxurious</option><option>Moody & cinematic</option></select></div>
+      <div class="form-group"><label>Number of subjects</label><select class="form-control" id="planSubjects"><option>Solo (1 person)</option><option>Duo (2 people)</option><option>Small group (3–5)</option><option>Large group (6+)</option></select></div>
+      <div class="form-group"><label>Outfit pattern</label><select class="form-control" id="planPattern"><option value="">— Skip —</option><option>Solid / plain</option><option>Ankara / African print</option><option>Lace / embroidery</option><option>Stripes / checks</option><option>Floral</option><option>Mixed / colourful</option><option>Sequins / metallic</option></select></div>
+      <div class="form-group"><label>Skin tone (optional)</label><select class="form-control" id="planSkin"><option value="">— Skip —</option><option>Very fair / light</option><option>Fair / medium</option><option>Olive / warm medium</option><option>Tan / caramel</option><option>Deep brown</option><option>Very deep / dark</option></select></div>
+      <div class="form-group"><label>Preferred lighting</label><select class="form-control" id="planLight"><option value="">— No preference —</option><option>Soft box / diffused</option><option>Ring light</option><option>Hard / dramatic</option><option>Natural light style</option><option>Rembrandt lighting</option></select></div>
+      <div class="form-group"><label>Budget</label><select class="form-control" id="planBudget"><option value="">— Not specified —</option><option>Any backdrop available</option><option>Budget — basic solid colours</option><option>Mid — wider colour range</option><option>Premium — any option</option></select></div>
     </div>
-
-    <button class="btn-run" onclick="runPlanner()">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="white" stroke-width="1.5"/><path d="M7 10h6M10 7l3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
-      GET MY SUGGESTIONS
-    </button>
-
+    <button class="btn-run" onclick="runPlanner()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="white" stroke-width="1.5"/><path d="M7 10h6M10 7l3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>GET MY SUGGESTIONS</button>
     <div id="plannerResults" style="display:none;margin-top:28px"></div>
   </div>
 </div>
 
-<!-- ===== COLOUR THEORY PAGE ===== -->
+<!-- COLOUR THEORY -->
 <div class="page" id="page-theory">
   <div class="page-inner">
     <div class="sec-label">Education</div>
@@ -556,7 +406,7 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
   </div>
 </div>
 
-<!-- ===== SAVED PAGE ===== -->
+<!-- SAVED -->
 <div class="page" id="page-saved">
   <div class="page-inner">
     <div class="sec-label">Your Collection</div>
@@ -566,7 +416,7 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
 </div>
 
 <script>
-// ========== DATA ==========
+// ===== DATA =====
 const OUTFITS=[
   {name:"Red",hex:"#C62828",group:"Warm & Bold"},
   {name:"Burgundy",hex:"#6A0032",group:"Warm & Bold"},
@@ -636,64 +486,218 @@ const BDM={
 const BDC={
   "Dark Grey":"#424242","Charcoal":"#2C2C2C","Neutral Grey":"#9E9E9E","Light Grey":"#D0D0D0",
   "Bright Grey":"#BDBDBD","Warm Grey":"#9E8E80","White":"#F8F8F5","Cream":"#FFF8E7",
-  "Nude/Cream":"#E8D5B8","Nude":"#D4B896","Ivory":"#FFFDE7","Black":"#121212",
-  "Sky Blue":"#81D4FA","Dusty Blue":"#7B9BB0","Royal Blue":"#1565C0","Navy":"#0D1B2A",
+  "Nude/Cream":"#E8D5B8","Nude":"#D4B896","Black":"#121212","Sky Blue":"#81D4FA",
+  "Dusty Blue":"#7B9BB0","Royal Blue":"#1565C0","Navy":"#0D1B2A","Navy Blue":"#0D1B2A",
   "Forest Green":"#1B5E20","Deep Green":"#0D3B1C","Sage Green":"#7C9A72",
   "Burgundy":"#6A0032","Dusty Pink":"#C09090","Blush Pink":"#F8BBD9","Light Pink":"#FCE4EC",
   "Light Brown":"#A1887F","Dark Brown":"#4E342E","Brown":"#6D4C41","Chocolate Brown":"#3E1F0D",
-  "Warm Brown":"#795548","Orange Brown":"#A0522D","Navy Blue":"#0D1B2A","Sage":"#87A878",
+  "Warm Grey":"#9E8E80","Orange Brown":"#A0522D","Sage":"#87A878",
 };
 
 const THEORIES=[
-  {icon:"⬤",name:"Complementary",desc:"Colours opposite on the colour wheel create maximum contrast — bold and eye-catching. Best for dramatic, high-energy portraits.",pairs:["Red → Forest Green","Blue → Orange Brown","Purple → Sage Green"],bds:["Dark Grey","Forest Green","Royal Blue"]},
-  {icon:"◐",name:"Analogous Harmony",desc:"Colours next to each other on the wheel create natural flow and elegance. Perfect for editorial and fashion photography.",pairs:["Orange → Brown → Cream","Green → Teal → Blue","Pink → Purple → Lavender"],bds:["Dark Brown","Warm Grey","Cream"]},
-  {icon:"◯",name:"Neutral Anchor",desc:"Grey, cream, brown, and nude backdrops work with nearly every outfit. The photographer's most reliable safety net.",pairs:["Any outfit → Charcoal","Any outfit → Cream","Any outfit → Warm Grey"],bds:["Charcoal","Cream","Warm Grey"]},
-  {icon:"◑",name:"Tonal Contrast",desc:"Deep outfits against light backdrops, light outfits against dark. Simple but powerful — maximises subject presence in the frame.",pairs:["Black outfit → White","White outfit → Dark Grey","Navy → Cream"],bds:["White","Black","Dark Grey"]},
-  {icon:"◭",name:"Earth Harmony",desc:"Earthy outfits (brown, olive, nude) combine beautifully with warm natural tones. Very popular in Lagos and Abuja studios.",pairs:["Ankara → Cream","Dark Brown → Forest Green","Olive → Nude"],bds:["Cream","Dark Brown","Forest Green"]},
-  {icon:"◈",name:"Skin Tone Lift",desc:"Warm backdrops (cream, dusty pink) flatter deeper skin tones; cool tones (dusty blue, sage) suit lighter skin tones beautifully.",pairs:["Deep skin → Warm Cream or Charcoal","Fair skin → Dusty Blue","Caramel → Dusty Pink"],bds:["Dusty Pink","Cream","Charcoal"]},
+  {icon:"⬤",name:"Complementary",desc:"Colours opposite on the colour wheel create maximum contrast — bold and eye-catching.",pairs:["Red → Forest Green","Blue → Orange Brown","Purple → Sage Green"],bds:["Dark Grey","Forest Green","Royal Blue"]},
+  {icon:"◐",name:"Analogous Harmony",desc:"Colours next to each other on the wheel create natural flow and elegance.",pairs:["Orange → Brown → Cream","Green → Teal → Blue","Pink → Purple → Lavender"],bds:["Dark Brown","Warm Grey","Cream"]},
+  {icon:"◯",name:"Neutral Anchor",desc:"Grey, cream, brown, and nude backdrops work with nearly every outfit colour.",pairs:["Any outfit → Charcoal","Any outfit → Cream","Any outfit → Warm Grey"],bds:["Charcoal","Cream","Warm Grey"]},
+  {icon:"◑",name:"Tonal Contrast",desc:"Deep outfits against light backdrops, light outfits against dark. Simple but powerful.",pairs:["Black outfit → White","White outfit → Dark Grey","Navy → Cream"],bds:["White","Black","Dark Grey"]},
+  {icon:"◭",name:"Earth Harmony",desc:"Earthy outfits (brown, olive, nude) combine beautifully with warm natural tones.",pairs:["Ankara → Cream","Dark Brown → Forest Green","Olive → Nude"],bds:["Cream","Dark Brown","Forest Green"]},
+  {icon:"◈",name:"Skin Tone Lift",desc:"Warm backdrops lift deeper skin tones; cool tones define fairer complexions.",pairs:["Deep skin → Cream or Charcoal","Fair skin → Dusty Blue","Caramel → Dusty Pink"],bds:["Dusty Pink","Cream","Charcoal"]},
 ];
 
 const LIGHTING=[
   {icon:"☀",name:"Soft Box",desc:"Smooth even light. Most popular in Nigerian studios. Great for portraits, families, and skin tone.",tags:["Portraits","Families","Skin-flattering"]},
-  {icon:"◎",name:"Ring Light",desc:"Circular catchlight in eyes. Fashion and beauty editorial feel.",tags:["Fashion","Beauty","Editorial"]},
+  {icon:"◎",name:"Ring Light",desc:"Circular catchlight in eyes. Fashion and beauty editorial feel. Popular for headshots.",tags:["Fashion","Beauty","Editorial"]},
   {icon:"▲",name:"Hard / Dramatic",desc:"Deep shadows and high contrast. Best on dark backdrops for a cinematic look.",tags:["Dramatic","Cinematic","Music"]},
-  {icon:"◇",name:"Rembrandt",desc:"Side lighting with a triangle of light under the eye. Classic for artistic and cultural portraiture.",tags:["Fine Art","Traditional","Royal"]},
-  {icon:"◈",name:"Butterfly",desc:"Light above the subject creates a butterfly shadow under the nose. Glamour staple.",tags:["Glamour","Beauty","Corporate"]},
+  {icon:"◇",name:"Rembrandt",desc:"Side lighting with a small triangle of light under the eye. Classic for artistic portraiture.",tags:["Fine Art","Traditional","Royal"]},
+  {icon:"◈",name:"Butterfly",desc:"Light directly above the subject. Creates a butterfly shadow under the nose — glamour staple.",tags:["Glamour","Beauty","Corporate"]},
   {icon:"◑",name:"Natural Style",desc:"Mimics window light. Warm and relaxed. Best for maternity, newborn, and lifestyle shoots.",tags:["Maternity","Newborn","Lifestyle"]},
 ];
 
-// ========== STATE ==========
-let selectedIdx=null,bdIdx=0;
+// ===== STATE =====
+let selectedIdx=null, bdIdx=0, activePart='both';
 let saved=[];
-try{saved=JSON.parse(localStorage.getItem('bds_saved')||'[]')}catch(e){}
+try{saved=JSON.parse(localStorage.getItem('bds_saved2')||'[]')}catch(e){}
+let threeReady=false;
+let topColor=0x1a1a1a, bottomColor=0x1a1a1a;
 
-// ========== INIT ==========
-function init(){
-  renderChips();
-  renderLighting();
-  renderTheory();
-  renderMap();
-  renderSaved();
-  updateBadge();
-  populatePlannerSelect();
-  initCursor();
-}
+// ===== THREE.JS MANNEQUIN =====
+let scene,camera,renderer,mannequin,topMats=[],bottomMats=[],autoRotate=true;
 
-function initCursor(){
-  const c=document.getElementById('cursor'),r=document.getElementById('cursor-ring');
-  if(!c||!r)return;
-  document.addEventListener('mousemove',e=>{
-    c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';
-    setTimeout(()=>{r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';},60);
+function hexToInt(hex){return parseInt(hex.replace('#',''),16);}
+
+function initThree(){
+  const container=document.getElementById('stageBackdrop');
+  if(!container||!window.THREE)return;
+
+  scene=new THREE.Scene();
+  const w=container.clientWidth,h=container.clientHeight;
+  camera=new THREE.PerspectiveCamera(42,w/h,0.1,100);
+  camera.position.set(0,0.8,5.2);
+  camera.lookAt(0,0.4,0);
+
+  const canvas=document.createElement('canvas');
+  canvas.style.cssText='position:absolute;inset:0;width:100%;height:100%;touch-action:none;z-index:2;';
+  container.appendChild(canvas);
+
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setSize(w,h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x000000,0);
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+  // Lighting
+  scene.add(new THREE.AmbientLight(0xffffff,0.55));
+  const fl=new THREE.DirectionalLight(0xffffff,1.3);
+  fl.position.set(2,4,4);fl.castShadow=true;scene.add(fl);
+  const rl=new THREE.DirectionalLight(0xaaaaff,0.35);
+  rl.position.set(-3,2,-3);scene.add(rl);
+  const bl=new THREE.DirectionalLight(0xffffff,0.15);
+  bl.position.set(0,-3,2);scene.add(bl);
+
+  // Materials
+  const neutral=()=>new THREE.MeshStandardMaterial({color:0x111111,roughness:0.28,metalness:0.22});
+  const makeTop=()=>{const m=new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:0.38,metalness:0.12});topMats.push(m);return m;};
+  const makeBot=()=>{const m=new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:0.38,metalness:0.12});bottomMats.push(m);return m;};
+
+  mannequin=new THREE.Group();
+
+  function add(geo,mat,x,y,z,rx,rz){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(x||0,y||0,z||0);
+    if(rx)m.rotation.x=rx;if(rz)m.rotation.z=rz;
+    m.castShadow=true;m.receiveShadow=true;
+    mannequin.add(m);return m;
+  }
+
+  // HEAD — smooth oval, no features
+  const hg=new THREE.SphereGeometry(0.28,48,48);
+  hg.applyMatrix4(new THREE.Matrix4().makeScale(1,1.18,0.94));
+  add(hg,neutral(),0,2.28,0);
+
+  // NECK
+  add(new THREE.CylinderGeometry(0.1,0.13,0.27,32),neutral(),0,2.0,0);
+
+  // TORSO using LatheGeometry — S-curve body shape
+  const tp=[];
+  const tProfile=[[0,0],[0.27,0.04],[0.265,0.15],[0.22,0.38],[0.235,0.58],[0.285,0.82],[0.31,1.0],[0.29,1.18],[0,1.22]];
+  tProfile.forEach(p=>tp.push(new THREE.Vector2(p[0],p[1])));
+  add(new THREE.LatheGeometry(tp,48),makeTop(),0,0.62,0);
+
+  // SHOULDERS
+  [-1,1].forEach(s=>{
+    const sg=new THREE.SphereGeometry(0.115,24,24);
+    sg.applyMatrix4(new THREE.Matrix4().makeScale(0.9,0.85,1));
+    add(sg,makeTop(),s*0.41,1.83,0);
   });
+
+  // UPPER ARMS
+  [-1,1].forEach(s=>{
+    const uag=new THREE.CylinderGeometry(0.085,0.072,0.52,24);
+    const uam=makeTop();
+    const ua=new THREE.Mesh(uag,uam);
+    ua.position.set(s*0.54,1.6,0);ua.rotation.z=s*0.2;
+    ua.castShadow=true;mannequin.add(ua);
+
+    const lag=new THREE.CylinderGeometry(0.065,0.054,0.48,24);
+    const lam=makeTop();
+    const la=new THREE.Mesh(lag,lam);
+    la.position.set(s*0.62,1.12,0);la.rotation.z=s*0.28;
+    la.castShadow=true;mannequin.add(la);
+
+    // Hand — slightly flattened sphere
+    const hg2=new THREE.SphereGeometry(0.07,20,16);
+    hg2.applyMatrix4(new THREE.Matrix4().makeScale(0.78,1.15,0.6));
+    add(hg2,neutral(),s*0.695,0.84,0);
+  });
+
+  // HIPS
+  const hp=[];
+  const hProfile=[[0,0],[0.26,0.04],[0.295,0.18],[0.3,0.32],[0.27,0.44],[0.15,0.5],[0,0.5]];
+  hProfile.forEach(p=>hp.push(new THREE.Vector2(p[0],p[1])));
+  add(new THREE.LatheGeometry(hp,48),makeBot(),0,0.12,0);
+
+  // UPPER LEGS
+  [-1,1].forEach(s=>{
+    const ulg=new THREE.CylinderGeometry(0.11,0.095,0.64,24);
+    const ulm=makeBot();
+    const ul=new THREE.Mesh(ulg,ulm);
+    ul.position.set(s*0.13,-0.08,0);ul.castShadow=true;mannequin.add(ul);
+
+    const llg=new THREE.CylinderGeometry(0.082,0.062,0.62,24);
+    const llm=makeBot();
+    const ll=new THREE.Mesh(llg,llm);
+    ll.position.set(s*0.13,-0.74,0);ll.castShadow=true;mannequin.add(ll);
+
+    // Foot
+    const fg=new THREE.SphereGeometry(0.085,20,12);
+    fg.applyMatrix4(new THREE.Matrix4().makeScale(0.88,0.42,1.65));
+    add(fg,neutral(),s*0.13,-1.08,0.07);
+  });
+
+  // Floor shadow plane
+  const floor=new THREE.Mesh(
+    new THREE.CircleGeometry(1.2,48),
+    new THREE.MeshStandardMaterial({color:0x000000,transparent:true,opacity:0.18,roughness:1})
+  );
+  floor.rotation.x=-Math.PI/2;
+  floor.position.y=-1.15;
+  floor.receiveShadow=true;
+  mannequin.add(floor);
+
+  mannequin.position.y=-0.55;
+  scene.add(mannequin);
+  threeReady=true;
+
+  // Drag rotation
+  let isDrag=false,prevX=0,dragTimer=null;
+  const onDown=e=>{
+    isDrag=true;
+    prevX=e.touches?e.touches[0].clientX:e.clientX;
+    autoRotate=false;
+    canvas.style.cursor='grabbing';
+    document.getElementById('dragHint').classList.add('hidden');
+    clearTimeout(dragTimer);
+  };
+  const onMove=e=>{
+    if(!isDrag)return;
+    const cx=e.touches?e.touches[0].clientX:e.clientX;
+    mannequin.rotation.y+=(cx-prevX)*0.013;
+    prevX=cx;
+    if(e.cancelable)e.preventDefault();
+  };
+  const onUp=()=>{
+    isDrag=false;
+    canvas.style.cursor='grab';
+    dragTimer=setTimeout(()=>autoRotate=true,2200);
+  };
+  canvas.addEventListener('mousedown',onDown);
+  window.addEventListener('mousemove',onMove);
+  window.addEventListener('mouseup',onUp);
+  canvas.addEventListener('touchstart',onDown,{passive:false});
+  canvas.addEventListener('touchmove',onMove,{passive:false});
+  canvas.addEventListener('touchend',onUp);
+
+  // Resize
+  const ro=new ResizeObserver(()=>{
+    const w2=container.clientWidth,h2=container.clientHeight;
+    if(w2>0&&h2>0){camera.aspect=w2/h2;camera.updateProjectionMatrix();renderer.setSize(w2,h2);}
+  });
+  ro.observe(container);
+
+  // Animate
+  (function anim(){
+    requestAnimationFrame(anim);
+    if(autoRotate)mannequin.rotation.y+=0.006;
+    renderer.render(scene,camera);
+  })();
 }
 
-function populatePlannerSelect(){
-  const s=document.getElementById('planOutfit');
-  OUTFITS.forEach(o=>{const op=document.createElement('option');op.value=o.name;op.textContent=o.name;s.appendChild(op);});
+function updateMannequinColors(){
+  topMats.forEach(m=>m.color.setHex(topColor));
+  bottomMats.forEach(m=>m.color.setHex(bottomColor));
 }
 
-// ========== CHIPS ==========
+// ===== CHIPS =====
 function renderChips(){
   const grps={};
   OUTFITS.forEach((o,i)=>{if(!grps[o.group])grps[o.group]=[];grps[o.group].push({...o,i});});
@@ -705,14 +709,26 @@ function renderChips(){
     d.innerHTML=`<div class="group-label">${g}</div><div class="chip-row">${items.map(o=>`<div class="chip" style="background:${o.hex}" onclick="selectOutfit(${o.i},this)"><span class="chip-label">${o.name}</span></div>`).join('')}</div>`;
     wrap.appendChild(d);
   });
+  const sel=document.getElementById('planOutfit');
+  OUTFITS.forEach(o=>{const op=document.createElement('option');op.value=o.name;op.textContent=o.name;sel.appendChild(op);});
+}
+
+function setPart(part){
+  activePart=part;
+  ['Both','Top','Bottom'].forEach(p=>document.getElementById('pt'+p).classList.toggle('active',p.toLowerCase()===part));
 }
 
 function selectOutfit(idx,el){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
   selectedIdx=idx;bdIdx=0;
-  updateStage();
-  renderSwiper();
+  const o=OUTFITS[idx];
+  const hex=hexToInt(o.hex);
+  if(activePart==='both'){topColor=hex;bottomColor=hex;}
+  else if(activePart==='top'){topColor=hex;}
+  else{bottomColor=hex;}
+  if(threeReady)updateMannequinColors();
+  updateStage();renderSwiper();
   document.getElementById('saveBtn').classList.remove('saved');
 }
 
@@ -725,13 +741,10 @@ function updateStage(){
   document.getElementById('stageBackdrop').style.background=bdHex;
   document.getElementById('stageName').textContent=bd.toUpperCase();
   document.getElementById('stageDesc').textContent=`${o.name} outfit · Match ${bdIdx+1} of ${bds.length}`;
-  document.getElementById('top').style.fill=o.hex;
-  document.getElementById('armL').style.fill=o.hex;
-  document.getElementById('armR').style.fill=o.hex;
   const tips=[
-    `<strong>Best pick for ${o.name}</strong> — ${bd} creates the strongest backdrop contrast using colour theory. Maximum visual impact.`,
-    `<strong>Alternative option</strong> — ${bd} pairs well with ${o.name} through tonal harmony. Great for editorial lighting.`,
-    `<strong>Option ${bdIdx+1}</strong> — ${bd} works especially well for ${o.name} across all skin tones and shoot styles.`,
+    `<strong>Best pick for ${o.name}</strong> — ${bd} creates the strongest backdrop contrast using colour theory.`,
+    `<strong>Alternative option</strong> — ${bd} pairs with ${o.name} through tonal harmony. Great for editorial lighting.`,
+    `<strong>Option ${bdIdx+1}</strong> — ${bd} works well across all skin tones with ${o.name} outfits.`,
   ];
   document.getElementById('theoryTip').innerHTML=tips[Math.min(bdIdx,2)]||`<strong>${bd}</strong> is a well-matched backdrop for ${o.name} outfits.`;
   document.querySelectorAll('.swipe-card').forEach((c,i)=>c.classList.toggle('active',i===bdIdx));
@@ -742,32 +755,40 @@ function renderSwiper(){
   const o=OUTFITS[selectedIdx];
   const bds=BDM[o.name]||[];
   const ranks=['#1 BEST','#2 GREAT','#3 GREAT','#4 GOOD','#5 GOOD','GOOD','GOOD','GOOD'];
-  const rc=['rank-1','rank-2','rank-3','rank-other','rank-other','rank-other','rank-other','rank-other'];
-  const track=document.getElementById('swipeTrack');
-  track.innerHTML=bds.map((bd,i)=>{
-    const hex=BDC[bd]||'#888';
-    return`<div class="swipe-card${i===0?' active':''}" onclick="bdIdx=${i};updateStage()">
-      <div class="swipe-swatch" style="background:${hex}"></div>
-      <div class="swipe-info">
-        <h4>${bd}</h4>
-        <span class="swipe-rank ${rc[i]}">${ranks[i]}</span>
-      </div>
+  const rc=['r1','r2','r3','ro','ro','ro','ro','ro'];
+  document.getElementById('swipeTrack').innerHTML=bds.map((bd,i)=>`
+    <div class="swipe-card${i===0?' active':''}" onclick="bdIdx=${i};updateStage()">
+      <div class="swipe-swatch" style="background:${BDC[bd]||'#888'}"></div>
+      <div class="swipe-info"><h4>${bd}</h4><span class="swipe-rank ${rc[i]}">${ranks[i]}</span></div>
+    </div>`).join('');
+}
+
+function renderLighting(){
+  document.getElementById('lightingGrid').innerHTML=LIGHTING.map(l=>`
+    <div class="light-card"><div class="li">${l.icon}</div><h4>${l.name}</h4><p>${l.desc}</p>
+    <div class="tags">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>`).join('');
+}
+
+function renderTheory(){
+  document.getElementById('theoryCards').innerHTML=THEORIES.map(t=>`
+    <div class="theory-card">
+      <h3>${t.icon} ${t.name}</h3><p>${t.desc}</p>
+      <div class="theory-pairs">${t.pairs.map(p=>`→ ${p}<br>`).join('')}</div>
+      <div class="t-swatches">${t.bds.map(b=>`<div class="t-sw" style="background:${BDC[b]||'#888'}" title="${b}"></div>`).join('')}</div>
+    </div>`).join('');
+}
+
+function renderMap(){
+  document.getElementById('mapGrid').innerHTML=OUTFITS.map(o=>{
+    const bds=BDM[o.name]||[];
+    return`<div class="map-card" onclick="selectOutfitByName('${o.name}');showPage('visual')">
+      <div class="map-split"><div class="map-half" style="background:${o.hex}"></div><div class="map-half" style="background:${BDC[bds[0]]||'#555'}"></div><div class="map-arrow">→</div></div>
+      <div class="map-info"><h4>${o.name}</h4><p>${bds[0]||'—'}</p><div class="map-count">${bds.length} options</div></div>
     </div>`;
   }).join('');
 }
 
-function renderLighting(){
-  const g=document.getElementById('lightingGrid');
-  g.innerHTML=LIGHTING.map(l=>`
-    <div class="light-card">
-      <div class="light-icon">${l.icon}</div>
-      <h4>${l.name}</h4>
-      <p>${l.desc}</p>
-      <div class="tags">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-    </div>`).join('');
-}
-
-// ========== PLANNER ==========
+// ===== PLANNER =====
 function runPlanner(){
   const outfit=document.getElementById('planOutfit').value;
   const style=document.getElementById('planStyle').value;
@@ -782,33 +803,26 @@ function runPlanner(){
   const outfitObj=OUTFITS.find(o=>o.name===outfit);
   const outfitHex=outfitObj?outfitObj.hex:'#888';
   const tips=[];
-  if(pattern==='Ankara / African print')tips.push('With Ankara or print outfits, always use solid neutral backdrops — cream, nude, or charcoal — to let the fabric pattern breathe.');
+  if(pattern==='Ankara / African print')tips.push('With Ankara or print outfits, always use solid neutral backdrops — cream, nude, or charcoal — to let the fabric breathe.');
   if(skin==='Deep brown'||skin==='Very deep / dark')tips.push('For deeper skin tones, warm cream and dusty pink backdrops add a natural glow. Charcoal and dark grey add dramatic contrast.');
   if(skin==='Very fair / light'||skin==='Fair / medium')tips.push('For fair skin tones, avoid very light backdrops. Use dusty blue, sage green or warm grey for definition.');
   if(style==='Traditional Attire / Cultural')tips.push('Traditional attire pops best on neutral or earthy backdrops. Avoid brightly coloured backdrops that compete with detailed patterns.');
   if(style==='Corporate / Professional')tips.push('Grey tones and navy project authority and professionalism. Keep it clean and distraction-free.');
-  if(style==='Maternity / Newborn')tips.push('Use soft warm backdrops — cream, blush pink, and sage green are ideal. Avoid harsh dark backgrounds.');
-  if(style==='Family / Group')tips.push('For groups, neutral options like warm grey, cream, or charcoal are safest when outfits vary across subjects.');
+  if(style==='Maternity / Newborn')tips.push('Use soft warm backdrops — cream, blush pink, and sage green. Avoid harsh dark backgrounds.');
+  if(style==='Family / Group')tips.push('For groups with varying outfits, neutral options like warm grey, cream, or charcoal work for everyone.');
   if(mood==='Bold & dramatic')tips.push('For a dramatic mood, use dark backdrops (charcoal, black, deep green) with hard or Rembrandt lighting.');
-  if(mood==='Soft & romantic')tips.push('For a romantic feel, blush pink, dusty pink, and sage green with soft box lighting create a beautiful airy atmosphere.');
-  if(light==='Ring light')tips.push('Ring lighting works best against mid-tone and neutral backdrops. Avoid very bright backdrops that can cause overexposure.');
+  if(mood==='Soft & romantic')tips.push('For a romantic feel, blush pink, dusty pink, and sage green with soft box lighting create a beautiful atmosphere.');
+  if(light==='Ring light')tips.push('Ring lighting works best against mid-tone and neutral backdrops. Avoid very bright backdrops that cause overexposure at the edges.');
   if(subjects.includes('Large group'))tips.push('For large groups, neutral mid-tones (warm grey, charcoal) read consistently across all subjects in the frame.');
   if(pattern==='Sequins / metallic')tips.push('Sequin and metallic outfits are bold — pair with solid dark backdrops (black, charcoal, navy) to let the outfit shine.');
-  if(tips.length===0)tips.push(`${outfit} outfits are highly versatile. The backdrops above all work well across a range of lighting setups and skin tones.`);
-
+  if(tips.length===0)tips.push(`${outfit} outfits are highly versatile. The backdrops above all work well across different lighting setups and skin tones.`);
   const r=document.getElementById('plannerResults');
   r.style.display='block';
   r.innerHTML=`
-    <div class="result-hero" style="background:linear-gradient(135deg,${bestHex}22,${bestHex}08)">
-      <div class="result-swatches">
-        <div class="result-outfit-sw" style="background:${outfitHex}"></div>
-        <div class="result-bd-sw" style="background:${bestHex}"></div>
-      </div>
-      <div>
-        <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:5px">Best backdrop match</div>
-        <h2>${best}</h2>
-        <p>${outfit} outfit${style?' · '+style:''}${mood?' · '+mood:''}</p>
-      </div>
+    <div class="result-hero" style="background:linear-gradient(135deg,${bestHex}22,${bestHex}06)">
+      <div class="r-swatches"><div class="r-out" style="background:${outfitHex}"></div><div class="r-bd" style="background:${bestHex}"></div></div>
+      <div><div style="font-size:9px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:5px">Best backdrop match</div>
+      <h2>${best}</h2><p>${outfit} outfit${style?' · '+style:''}${mood?' · '+mood:''}</p></div>
       <div class="best-tag">★ TOP PICK</div>
     </div>
     <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Alternatives (ranked)</div>
@@ -818,50 +832,7 @@ function runPlanner(){
   showToast('Suggestions ready!');
 }
 
-// ========== THEORY ==========
-function renderTheory(){
-  const g=document.getElementById('theoryCards');
-  g.innerHTML=THEORIES.map(t=>`
-    <div class="theory-card">
-      <div class="theory-card-icon">${t.icon}</div>
-      <h3>${t.name}</h3>
-      <p>${t.desc}</p>
-      <div class="theory-pairs">${t.pairs.map(p=>`→ ${p}<br>`).join('')}</div>
-      <div class="t-swatches">${t.bds.map(b=>`<div class="t-sw" style="background:${BDC[b]||'#888'}" title="${b}"></div>`).join('')}</div>
-    </div>`).join('');
-}
-
-function renderMap(){
-  const g=document.getElementById('mapGrid');
-  g.innerHTML=OUTFITS.map(o=>{
-    const bds=BDM[o.name]||[];
-    const bdHex=BDC[bds[0]]||'#555';
-    return`<div class="map-card" onclick="selectOutfitByName('${o.name}');showPage('visual')">
-      <div class="map-split">
-        <div class="map-half" style="background:${o.hex}"></div>
-        <div class="map-half" style="background:${bdHex}"></div>
-        <div class="map-arrow">→</div>
-      </div>
-      <div class="map-info">
-        <h4>${o.name}</h4>
-        <p>${bds[0]||'—'}</p>
-        <div class="map-count">${bds.length} options</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function selectOutfitByName(name){
-  const idx=OUTFITS.findIndex(o=>o.name===name);
-  if(idx===-1)return;
-  selectedIdx=idx;bdIdx=0;
-  setTimeout(()=>{
-    const chips=document.querySelectorAll('.chip');
-    if(chips[idx]){chips[idx].classList.add('selected');updateStage();renderSwiper();}
-  },120);
-}
-
-// ========== SAVED ==========
+// ===== SAVED =====
 function saveCurrentCombo(){
   if(selectedIdx===null){showToast('Select an outfit first!');return;}
   const o=OUTFITS[selectedIdx];
@@ -870,94 +841,83 @@ function saveCurrentCombo(){
   const id=o.name+'-'+bd;
   if(saved.find(c=>c.id===id)){showToast('Already saved!');return;}
   saved.push({id,outfit:o.name,oHex:o.hex,backdrop:bd,bHex:BDC[bd]||'#555',date:new Date().toLocaleDateString()});
-  localStorage.setItem('bds_saved',JSON.stringify(saved));
+  localStorage.setItem('bds_saved2',JSON.stringify(saved));
   document.getElementById('saveBtn').classList.add('saved');
-  updateBadge();
-  showToast('Saved!');
+  updateBadge();showToast('Saved!');
 }
-
-function removeCombo(id){
-  saved=saved.filter(c=>c.id!==id);
-  localStorage.setItem('bds_saved',JSON.stringify(saved));
-  updateBadge();renderSaved();
-  showToast('Removed');
-}
-
-function updateBadge(){
-  document.getElementById('savedBadge').textContent=saved.length;
-}
-
+function removeCombo(id){saved=saved.filter(c=>c.id!==id);localStorage.setItem('bds_saved2',JSON.stringify(saved));updateBadge();renderSaved();showToast('Removed');}
+function updateBadge(){document.getElementById('savedBadge').textContent=saved.length;}
 function renderSaved(){
-  const content=document.getElementById('savedContent');
-  if(!content)return;
-  if(saved.length===0){
-    content.innerHTML=`<div class="empty-state"><svg viewBox="0 0 64 64" fill="none"><path d="M32 8L37 22H52L40 31L45 46L32 37L19 46L24 31L12 22H27L32 8Z" stroke="currentColor" stroke-width="2"/></svg><h3>No Saved Combos</h3><p>Go to Visual Studio and tap the ★ icon to save your favourite outfit + backdrop pairings here.</p></div>`;
-    return;
-  }
+  const content=document.getElementById('savedContent');if(!content)return;
+  if(saved.length===0){content.innerHTML=`<div class="empty-state"><h3>No Saved Combos</h3><p>Go to Visual Studio and tap the ★ icon to save your favourite outfit + backdrop pairings here.</p></div>`;return;}
   content.innerHTML=`<div class="saved-grid">${saved.map(c=>`
     <div class="saved-card">
       <div class="saved-swatches"><div class="saved-half" style="background:${c.oHex}"></div><div class="saved-half" style="background:${c.bHex}"></div></div>
-      <div class="saved-body">
-        <h4>${c.outfit} + ${c.backdrop}</h4>
-        <p>${c.date}</p>
-        <button class="saved-preview-btn" onclick="selectOutfitByName('${c.outfit}');showPage('visual')">Preview →</button>
-      </div>
+      <div class="saved-body"><h4>${c.outfit} + ${c.backdrop}</h4><p>${c.date}</p>
+      <button class="saved-preview-btn" onclick="selectOutfitByName('${c.outfit}');showPage('visual')">Preview →</button></div>
       <button class="saved-remove" onclick="removeCombo('${c.id}')">×</button>
     </div>`).join('')}</div>`;
 }
 
-// ========== SHARE ==========
+// ===== SHARE =====
 function openShare(){
   if(selectedIdx===null){showToast('Select an outfit + backdrop first');return;}
-  const o=OUTFITS[selectedIdx];
-  const bds=BDM[o.name]||[];
-  const bd=bds[bdIdx]||bds[0];
-  const bdHex=BDC[bd]||'#555';
+  const o=OUTFITS[selectedIdx];const bds=BDM[o.name]||[];
+  const bd=bds[bdIdx]||bds[0];const bdHex=BDC[bd]||'#555';
   document.getElementById('modalBdBar').style.background=bdHex;
   document.getElementById('modalBdBar').textContent=bd.toUpperCase();
-  document.getElementById('modalOutfitBar').innerHTML=`<span style="width:14px;height:14px;border-radius:3px;background:${o.hex};display:inline-block;flex-shrink:0"></span> ${o.name} &nbsp;+&nbsp; <span style="width:14px;height:14px;border-radius:3px;background:${bdHex};display:inline-block;flex-shrink:0"></span> ${bd}`;
+  document.getElementById('modalOutBar').innerHTML=`<span style="width:14px;height:14px;border-radius:3px;background:${o.hex};display:inline-block;flex-shrink:0"></span> ${o.name} &nbsp;+&nbsp; <span style="width:14px;height:14px;border-radius:3px;background:${bdHex};display:inline-block;flex-shrink:0"></span> ${bd}`;
   document.getElementById('modalDesc').textContent=`${o.name} outfit paired with ${bd} backdrop. Suggested by Backdrop Select.`;
   document.getElementById('modal').classList.add('show');
 }
-
 function closeModal(e){if(e.target.id==='modal')document.getElementById('modal').classList.remove('show');}
-
 function copyCombo(){
   if(selectedIdx===null)return;
-  const o=OUTFITS[selectedIdx];
-  const bds=BDM[o.name]||[];
-  const bd=bds[bdIdx]||bds[0];
-  const text=`Backdrop Select Recommendation\nOutfit: ${o.name}\nBest backdrop: ${bd}\nAll options: ${bds.join(', ')}\n\nvia Backdrop Select`;
-  navigator.clipboard.writeText(text).then(()=>showToast('Copied!')).catch(()=>showToast('Copy failed'));
+  const o=OUTFITS[selectedIdx];const bds=BDM[o.name]||[];const bd=bds[bdIdx]||bds[0];
+  navigator.clipboard.writeText(`Backdrop Select\nOutfit: ${o.name}\nBest backdrop: ${bd}\nAll options: ${bds.join(', ')}`).then(()=>showToast('Copied!')).catch(()=>showToast('Copy failed'));
   document.getElementById('modal').classList.remove('show');
 }
 
-// ========== NAVIGATION ==========
+// ===== NAVIGATION =====
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const pg=document.getElementById('page-'+id);
-  if(pg)pg.classList.add('active');
-  // Desktop nav
+  document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   const map={home:'Home',visual:'Visual Studio',smart:'Smart Planner',theory:'Colour Theory'};
   document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.trim()===map[id])t.classList.add('active');});
-  // Mobile nav
   document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
-  const mb=document.getElementById('bnav-'+id);
-  if(mb)mb.classList.add('active');
+  const mb=document.getElementById('bnav-'+id);if(mb)mb.classList.add('active');
   if(id==='saved')renderSaved();
+  if(id==='visual'&&!threeReady)setTimeout(initThree,80);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ========== TOAST ==========
+function selectOutfitByName(name){
+  const idx=OUTFITS.findIndex(o=>o.name===name);if(idx===-1)return;
+  selectedIdx=idx;bdIdx=0;
+  const hex=hexToInt(OUTFITS[idx].hex);
+  topColor=hex;bottomColor=hex;
+  if(threeReady)updateMannequinColors();
+  setTimeout(()=>{
+    const chips=document.querySelectorAll('.chip');
+    if(chips[idx]){chips[idx].classList.add('selected');updateStage();renderSwiper();}
+  },120);
+}
+
 function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-init();
+// ===== CURSOR =====
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},60);
+});
+
+// ===== INIT =====
+renderChips();renderLighting();renderTheory();renderMap();renderSaved();updateBadge();
 </script>
 </body>
 </html>
